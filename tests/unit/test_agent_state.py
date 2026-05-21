@@ -9,3 +9,9 @@ def test_agent_state_has_required_fields():
     assert hasattr(state, "context_loaded")
     assert hasattr(state, "done")
     assert hasattr(state, "error_count")
+
+
+def test_agent_state_context_loaded_defaults_to_false():
+    state = AgentState(model="gemma3:4b")
+
+    assert state.context_loaded is False
