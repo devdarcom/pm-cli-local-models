@@ -58,6 +58,14 @@ Aktualnie dostępne: gemma3:4b, gemma:7b, gemma:2b, gemma:security
 - Obsługa remote MCP servers
 - Każdy agent ma własną pulę połączeń MCP
 
+### At-Mentions (`@plik`)
+- Użytkownik wpisuje `@` + min. 2 znaki → dropdown z pasującymi plikami projektu (filtrowanie po prefiksie nazwy)
+- Wybrany plik wstrzykiwany jako osobny system message: `{"role": "system", "content": "[Załącznik: <nazwa>]\n<treść>"}` — przed wiadomością użytkownika
+- Pliki pomijane: `.git`, `__pycache__`, `.venv`, foldery z `.gitignore`
+- Limit wyników dropdown: `MAX_FILE_SUGGESTIONS` (stała nazwana)
+- Duże pliki (> 2000 tokenów): podsumowywane przed wstrzyknięciem (ta sama logika co `compress_node`)
+- Moduł: `app/tui/at_mention.py` + widget w `app/tui/`
+
 ### Interfejs (backslash commands)
 Wszystkie komendy wywoływane przez `\`:
 - `\new` — nowa sesja (nowy agent, czysty kontekst)
@@ -85,6 +93,7 @@ multimodel-pm/
 ├── app/
 │   ├── tui/                 # Textual — ekrany, widgety
 │   │   ├── app.py
+│   │   ├── at_mention.py    # suggest_files(), resolve_at_mention(), extract_at_mention()
 │   │   └── widgets/
 │   │
 │   ├── agent/               # LangGraph — definicja grafu agenta

@@ -195,6 +195,27 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 
 ---
 
+## At-Mentions (`app/tui/`)
+
+> Użytkownik wpisuje `@` + min. 2 znaki → pojawia się dropdown z pasującymi plikami projektu.
+> Wybrany plik jest wstrzykiwany jako osobny system message (`{"role": "system", "content": "[Załącznik: <nazwa>]\n<treść>"}`) przed wiadomością użytkownika.
+> Pliki z `.gitignore`, `__pycache__`, `.venv`, `.git` są pomijane.
+
+| ID | Typ | Opis | Status |
+|---|---|---|---|
+| AT-01 | UNIT | `suggest_files(prefix, project_dir)` zwraca pliki których nazwa zaczyna się od `prefix` | todo |
+| AT-02 | UNIT | `suggest_files()` zwraca pustą listę gdy żaden plik nie pasuje do `prefix` | todo |
+| AT-03 | UNIT | `suggest_files()` pomija katalogi z listy wykluczeń (`.git`, `__pycache__`, `.venv`) | todo |
+| AT-04 | UNIT | `suggest_files()` zwraca maksymalnie `MAX_FILE_SUGGESTIONS` wyników | todo |
+| AT-05 | UNIT | `resolve_at_mention(filename, project_dir)` zwraca treść pliku jako system message dict | todo |
+| AT-06 | UNIT | `resolve_at_mention()` zwraca `None` gdy plik nie istnieje | todo |
+| AT-07 | UNIT | `extract_at_mention(text)` zwraca token `@plik` z tekstu gdy jest obecny | todo |
+| AT-08 | UNIT | `extract_at_mention(text)` zwraca `None` gdy brak tokenu `@` z min. 2 znakami | todo |
+| AT-09 | INT | Wpisanie `@` + 2 znaki w TUI wywołuje `suggest_files()` i pokazuje dropdown | todo |
+| AT-10 | INT | Wybranie pliku z dropdown wstrzykuje go jako system message przed wiadomością użytkownika | todo |
+
+---
+
 ## Scenariusze E2E (`tests/e2e/`)
 
 > Implementowane po ukończeniu sekcji G (Graf agenta). Testują pełny przepływ z perspektywy użytkownika. Ollama mockowana na poziomie HTTP.
@@ -229,5 +250,6 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | MCP | 2 | 2 | 0 | 4 | 0 | 0 |
 | Wieloagentowość | 3 | 1 | 0 | 4 | 0 | 0 |
 | Potwierdzanie akcji | 2 | 3 | 0 | 5 | 0 | 0 |
+| At-Mentions | 8 | 2 | 0 | 10 | 0 | 0 |
 | Scenariusze E2E | 0 | 0 | 7 | 7 | 0 | 0 |
-| **Łącznie** | **69** | **21** | **7** | **97** | **17** | **4** |
+| **Łącznie** | **77** | **23** | **7** | **107** | **17** | **4** |
