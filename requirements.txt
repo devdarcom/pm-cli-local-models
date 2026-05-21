@@ -2,6 +2,6 @@ langgraph
 langchain-ollama
 langchain-core
 textual
-mcp
+# mcp  # do dodania gdy pakiet będzie dostępny na PyPI
 pytest
 pytest-asyncio
