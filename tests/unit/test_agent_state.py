@@ -1,0 +1,11 @@
+from app.agent.state import AgentState
+
+
+def test_agent_state_has_required_fields():
+    state = AgentState(model="gemma3:4b")
+
+    assert hasattr(state, "messages")
+    assert hasattr(state, "model")
+    assert hasattr(state, "context_loaded")
+    assert hasattr(state, "done")
+    assert hasattr(state, "error_count")
