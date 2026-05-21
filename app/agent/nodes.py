@@ -1,6 +1,10 @@
 from pathlib import Path
 from typing import Optional
 
+from langchain_ollama import ChatOllama
+
+from app.agent.state import AgentState
+
 PROJECT_CONTEXT_FILENAME = "PROJECT.md"
 AGENTS_MD_FILENAME = "AGENTS.md"
 CONTEXT_SEPARATOR = "\n\n"
@@ -33,6 +37,12 @@ def load_agents_md(agents_dir: Path = Path(".")) -> Optional[str]:
         return None
     except PermissionError as e:
         raise RuntimeError(f"Brak uprawnień do odczytu {agents_md}") from e
+
+
+def call_model(state: AgentState) -> dict:
+    model = ChatOllama(model=state.model_name)
+    response = model.invoke(state.messages)
+    return {"messages": state.messages + [response]}
 
 
 def build_prompt(
