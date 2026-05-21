@@ -1,6 +1,7 @@
 from unittest.mock import patch
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
+import app.agent.graph as graph_module
 from app.agent.graph import build_graph
 
 SYSTEM_PROMPT_MOCK = "Jesteś agentem AI."
@@ -49,3 +50,25 @@ def test_graph_loads_context_as_system_message_before_model_call():
     messages_passed_to_model = MockChatOllama.return_value.invoke.call_args[0][0]
     assert isinstance(messages_passed_to_model[0], SystemMessage)
     assert SYSTEM_PROMPT_MOCK in messages_passed_to_model[0].content
+
+
+def test_graph_ends_when_model_response_has_no_tool_call():
+    user_message = HumanMessage(content="Jakie jest 2+2?")
+    mock_response = AIMessage(content="4")
+
+    with patch("app.agent.nodes.load_system_prompt", return_value=SYSTEM_PROMPT_MOCK), \
+         patch("app.agent.nodes.load_project_context", return_value=PROJECT_CONTEXT_MOCK), \
+         patch("app.agent.nodes.load_agents_md", return_value=None), \
+         patch("app.agent.nodes.ChatOllama") as MockChatOllama, \
+         patch.object(graph_module, "route_after_model", wraps=graph_module.route_after_model) as spy_router:
+        MockChatOllama.return_value.invoke.return_value = mock_response
+
+        graph = build_graph()
+        result = graph.invoke({
+            "session_id": "test-session",
+            "model_name": "gemma3:4b",
+            "messages": [user_message],
+        })
+
+    spy_router.assert_called_once()
+    assert isinstance(result["messages"][-1], AIMessage)
