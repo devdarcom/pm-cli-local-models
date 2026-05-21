@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Optional
 
 PROJECT_CONTEXT_FILENAME = "PROJECT.md"
+CONTEXT_SEPARATOR = "\n\n"
 
 
 def load_project_context(project_dir: Path = Path(".")) -> Optional[str]:
@@ -19,3 +20,13 @@ def load_system_prompt(prompt_path: Path) -> str:
         return prompt_path.read_text(encoding="utf-8")
     except PermissionError as e:
         raise RuntimeError(f"Brak uprawnień do odczytu {prompt_path}") from e
+
+
+def build_prompt(
+    system_prompt: str,
+    project_context: Optional[str],
+) -> list:
+    content = system_prompt
+    if project_context:
+        content += CONTEXT_SEPARATOR + project_context
+    return [{"role": "system", "content": content}]
