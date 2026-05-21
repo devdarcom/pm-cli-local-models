@@ -1,7 +1,7 @@
 # Scenarios — Multimodel PM
 
 Legenda typów: `UNIT` = test jednostkowy, `INT` = test integracyjny (mockowana Ollama)
-Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło
+Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = wycofano z architektury
 
 ---
 
@@ -34,10 +34,10 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło
 
 | ID | Typ | Opis | Status |
 |---|---|---|---|
-| AS-01 | UNIT | `AgentState` ma pola: `messages`, `model`, `context_loaded`, `done`, `error_count` | done |
-| AS-02 | UNIT | `AgentState.context_loaded` domyślnie `False` | done |
-| AS-03 | UNIT | `AgentState.done` domyślnie `False` | done |
-| AS-04 | UNIT | `AgentState.error_count` domyślnie `0` | done |
+| AS-01 | UNIT | `AgentState` jest Pydantic BaseModel z polami: `messages`, `session_id`, `model_name`, `recursion_count`, `retry_count`, `last_error`, `error_node`, `error_type`, `summary`, `spawned_agents` | done |
+| AS-02 | UNIT | `extra="forbid"` rzuca `ValidationError` dla nieznanych pól | done |
+| AS-03 | UNIT | `recursion_count > 25` rzuca `ValidationError` | done |
+| AS-04 | UNIT | Domyślne wartości: `messages=[]`, `recursion_count=0`, `retry_count=0`, pola Optional domyślnie `None` | done |
 
 ---
 
@@ -64,8 +64,8 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło
 | ID | Typ | Opis | Status |
 |---|---|---|---|
 | G-01 | INT | Graf przyjmuje wiadomość użytkownika i zwraca odpowiedź (mock model) | todo |
-| G-02 | INT | Graf ładuje context (`context_loaded=True`) przed wywołaniem modelu | todo |
-| G-03 | INT | Graf kończy się (`done=True`) gdy model nie zwróci `tool_call` | todo |
+| G-02 | INT | Graf ładuje context i dodaje go jako system message przed pierwszym wywołaniem modelu | todo |
+| G-03 | INT | Graf kończy się gdy model nie zwróci `tool_call` (brak dalszych kroków w grafie) | todo |
 | G-04 | INT | Graf wywołuje `tool_node` gdy model zwróci `tool_call` | todo |
 | G-05 | INT | Graf wraca do `call_model` po wykonaniu narzędzia | todo |
 | G-06 | INT | Graf zatrzymuje się po `recursion_limit` krokach | todo |
@@ -77,12 +77,14 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło
 
 ## Kolejka requestów (`app/queue/request_queue.py`)
 
+> ⚠️ **Cancelled** — kolejkowanie delegowane do Ollamy via `OLLAMA_NUM_PARALLEL` i `OLLAMA_MAX_QUEUE`. Moduł `queue/` nie powstanie.
+
 | ID | Typ | Opis | Status |
 |---|---|---|---|
-| Q-01 | UNIT | `RequestQueue.add()` dodaje request do kolejki | todo |
-| Q-02 | UNIT | `RequestQueue` przetwarza requesty w kolejności FIFO | todo |
-| Q-03 | UNIT | `RequestQueue.cancel()` usuwa oczekujący request z kolejki | todo |
-| Q-04 | INT | Dwa agenty wysyłające jednocześnie nie blokują się wzajemnie | todo |
+| Q-01 | UNIT | `RequestQueue.add()` dodaje request do kolejki | cancelled |
+| Q-02 | UNIT | `RequestQueue` przetwarza requesty w kolejności FIFO | cancelled |
+| Q-03 | UNIT | `RequestQueue.cancel()` usuwa oczekujący request z kolejki | cancelled |
+| Q-04 | INT | Dwa agenty wysyłające jednocześnie nie blokują się wzajemnie | cancelled |
 
 ---
 
@@ -90,12 +92,12 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło
 
 | ID | Typ | Opis | Status |
 |---|---|---|---|
-| E-01 | UNIT | `error_handler` inkrementuje `error_count` w stanie agenta | todo |
-| E-02 | UNIT | `error_handler` zwraca stan z flagą `retry` gdy `error_count` < 3 | todo |
-| E-03 | UNIT | `error_handler` zwraca stan z flagą `abort` gdy `error_count` >= 3 | todo |
+| E-01 | UNIT | `error_handler` inkrementuje `retry_count` i ustawia `last_error`, `error_node`, `error_type` w stanie | todo |
+| E-02 | UNIT | `error_handler` zwraca `Command` z przejściem do retry gdy `retry_count` < 3 | todo |
+| E-03 | UNIT | `error_handler` zwraca `Command` z przejściem do escalate gdy `retry_count` >= 3 | todo |
 | E-04 | INT | Agent ponawia wywołanie modelu po błędnym output (max 3 razy) | todo |
 | E-05 | INT | Agent zwraca błąd do użytkownika po 3 nieudanych próbach | todo |
-| E-06 | INT | Agent kontynuuje po błędzie narzędzia (dostaje komunikat błędu) | todo |
+| E-06 | INT | Narzędzia zwracają error string zamiast rzucać wyjątek | todo |
 
 ---
 
@@ -189,20 +191,20 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło
 
 ## Podsumowanie
 
-| Moduł | UNIT | INT | Łącznie | Done |
-|---|---|---|---|---|
-| Session | 4 | 0 | 4 | 4 |
-| Context Loader | 7 | 0 | 7 | 1 |
-| AgentState | 4 | 0 | 4 | 4 |
-| Narzędzia plików | 11 | 0 | 11 | 0 |
-| Graf agenta | 3 | 6 | 9 | 0 |
-| Kolejka | 3 | 1 | 4 | 0 |
-| Obsługa błędów | 3 | 3 | 6 | 0 |
-| Kompresja | 3 | 3 | 6 | 0 |
-| Backslash Commands | 11 | 0 | 11 | 0 |
-| Zmiana modelu | 2 | 1 | 3 | 0 |
-| Skille | 5 | 1 | 6 | 0 |
-| MCP | 2 | 2 | 4 | 0 |
-| Wieloagentowość | 3 | 1 | 4 | 0 |
-| Potwierdzanie akcji | 2 | 3 | 5 | 0 |
-| **Łącznie** | **63** | **21** | **84** | **9** |
+| Moduł | UNIT | INT | Łącznie | Done | Cancelled |
+|---|---|---|---|---|---|
+| Session | 4 | 0 | 4 | 4 | 0 |
+| Context Loader | 7 | 0 | 7 | 1 | 0 |
+| AgentState | 4 | 0 | 4 | 4 | 0 |
+| Narzędzia plików | 11 | 0 | 11 | 0 | 0 |
+| Graf agenta | 3 | 6 | 9 | 0 | 0 |
+| Kolejka | 3 | 1 | 4 | 0 | 4 |
+| Obsługa błędów | 3 | 3 | 6 | 0 | 0 |
+| Kompresja | 3 | 3 | 6 | 0 | 0 |
+| Backslash Commands | 11 | 0 | 11 | 0 | 0 |
+| Zmiana modelu | 2 | 1 | 3 | 0 | 0 |
+| Skille | 5 | 1 | 6 | 0 | 0 |
+| MCP | 2 | 2 | 4 | 0 | 0 |
+| Wieloagentowość | 3 | 1 | 4 | 0 | 0 |
+| Potwierdzanie akcji | 2 | 3 | 5 | 0 | 0 |
+| **Łącznie** | **63** | **21** | **84** | **9** | **4** |
