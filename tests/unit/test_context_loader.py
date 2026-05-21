@@ -27,6 +27,13 @@ def test_load_system_prompt_returns_file_content(tmp_path):
     assert content == "Jesteś pomocnym asystentem."
 
 
+def test_load_system_prompt_raises_runtime_error_when_file_missing(tmp_path):
+    missing_path = tmp_path / "system_prompt.md"
+
+    with pytest.raises(RuntimeError):
+        load_system_prompt(prompt_path=missing_path)
+
+
 def test_build_prompt_combines_all_three_contexts():
     system_prompt = "Jesteś pomocnym asystentem."
     agents_context = "# Zasady clean code"
