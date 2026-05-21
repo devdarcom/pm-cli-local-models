@@ -189,22 +189,39 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 
 ---
 
+## Scenariusze E2E (`tests/e2e/`)
+
+> Implementowane po ukończeniu sekcji G (Graf agenta). Testują pełny przepływ z perspektywy użytkownika. Ollama mockowana na poziomie HTTP.
+
+| ID | Typ | Opis | Status |
+|---|---|---|---|
+| BIZ-01 | E2E | Użytkownik wysyła pytanie → agent odpowiada używając lokalnego modelu (mock Ollama) | todo |
+| BIZ-02 | E2E | Użytkownik wysyła pytanie → agent ładuje PROJECT.md i odpowiada z jego kontekstem | todo |
+| BIZ-03 | E2E | Użytkownik używa `\reset` → nowa rozmowa zaczyna się bez pamięci poprzedniej | todo |
+| BIZ-04 | E2E | Użytkownik pyta o plik → agent wywołuje `read_file` i zwraca treść | todo |
+| BIZ-05 | E2E | Ollama zwraca błąd → agent ponawia 3 razy → informuje użytkownika o niepowodzeniu | todo |
+| BIZ-06 | E2E | Użytkownik wysyła wiele wiadomości → po przekroczeniu progu historia zostaje skompresowana | todo |
+| BIZ-07 | E2E | Użytkownik używa `\spawn` → powstaje sub-agent → `\list` pokazuje dwa aktywne agenty | todo |
+
+---
+
 ## Podsumowanie
 
-| Moduł | UNIT | INT | Łącznie | Done | Cancelled |
-|---|---|---|---|---|---|
-| Session | 4 | 0 | 4 | 4 | 0 |
-| Context Loader | 7 | 0 | 7 | 2 | 0 |
-| AgentState | 4 | 0 | 4 | 4 | 0 |
-| Narzędzia plików | 11 | 0 | 11 | 0 | 0 |
-| Graf agenta | 3 | 6 | 9 | 0 | 0 |
-| Kolejka | 3 | 1 | 4 | 0 | 4 |
-| Obsługa błędów | 3 | 3 | 6 | 0 | 0 |
-| Kompresja | 3 | 3 | 6 | 0 | 0 |
-| Backslash Commands | 11 | 0 | 11 | 0 | 0 |
-| Zmiana modelu | 2 | 1 | 3 | 0 | 0 |
-| Skille | 5 | 1 | 6 | 0 | 0 |
-| MCP | 2 | 2 | 4 | 0 | 0 |
-| Wieloagentowość | 3 | 1 | 4 | 0 | 0 |
-| Potwierdzanie akcji | 2 | 3 | 5 | 0 | 0 |
-| **Łącznie** | **63** | **21** | **84** | **10** | **4** |
+| Moduł | UNIT | INT | E2E | Łącznie | Done | Cancelled |
+|---|---|---|---|---|---|---|
+| Session | 4 | 0 | 0 | 4 | 4 | 0 |
+| Context Loader | 7 | 0 | 0 | 7 | 2 | 0 |
+| AgentState | 4 | 0 | 0 | 4 | 4 | 0 |
+| Narzędzia plików | 11 | 0 | 0 | 11 | 0 | 0 |
+| Graf agenta | 3 | 6 | 0 | 9 | 0 | 0 |
+| Kolejka | 3 | 1 | 0 | 4 | 0 | 4 |
+| Obsługa błędów | 3 | 3 | 0 | 6 | 0 | 0 |
+| Kompresja | 3 | 3 | 0 | 6 | 0 | 0 |
+| Backslash Commands | 11 | 0 | 0 | 11 | 0 | 0 |
+| Zmiana modelu | 2 | 1 | 0 | 3 | 0 | 0 |
+| Skille | 5 | 1 | 0 | 6 | 0 | 0 |
+| MCP | 2 | 2 | 0 | 4 | 0 | 0 |
+| Wieloagentowość | 3 | 1 | 0 | 4 | 0 | 0 |
+| Potwierdzanie akcji | 2 | 3 | 0 | 5 | 0 | 0 |
+| Scenariusze E2E | 0 | 0 | 7 | 7 | 0 | 0 |
+| **Łącznie** | **63** | **21** | **7** | **91** | **10** | **4** |
