@@ -1,6 +1,6 @@
 import pytest
 
-from app.agent.nodes import load_project_context, load_system_prompt
+from app.agent.nodes import load_project_context, load_system_prompt, build_prompt
 
 
 def test_load_project_context_returns_content_when_file_exists(tmp_path):
@@ -25,3 +25,15 @@ def test_load_system_prompt_returns_file_content(tmp_path):
     content = load_system_prompt(prompt_path=prompt_file)
 
     assert content == "Jesteś pomocnym asystentem."
+
+
+def test_build_prompt_combines_system_prompt_and_project_context():
+    system_prompt = "Jesteś pomocnym asystentem."
+    project_context = "# Mój projekt\nOpis projektu."
+
+    messages = build_prompt(system_prompt=system_prompt, project_context=project_context)
+
+    assert len(messages) == 1
+    assert messages[0]["role"] == "system"
+    assert system_prompt in messages[0]["content"]
+    assert project_context in messages[0]["content"]
