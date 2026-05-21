@@ -1,12 +1,14 @@
 from pathlib import Path
 from typing import Optional
 
+from langchain_core.messages import SystemMessage
 from langchain_ollama import ChatOllama
 
 from app.agent.state import AgentState
 
 PROJECT_CONTEXT_FILENAME = "PROJECT.md"
 AGENTS_MD_FILENAME = "AGENTS.md"
+SYSTEM_PROMPT_FILENAME = "system_prompt.md"
 CONTEXT_SEPARATOR = "\n\n"
 
 
@@ -37,6 +39,21 @@ def load_agents_md(agents_dir: Path = Path(".")) -> Optional[str]:
         return None
     except PermissionError as e:
         raise RuntimeError(f"Brak uprawnień do odczytu {agents_md}") from e
+
+
+def load_context_node(state: AgentState) -> dict:
+    project_dir = Path(".")
+    system_prompt = load_system_prompt(project_dir / SYSTEM_PROMPT_FILENAME)
+    project_context = load_project_context(project_dir)
+    agents_context = load_agents_md(project_dir)
+
+    prompt_parts = build_prompt(
+        system_prompt=system_prompt,
+        project_context=project_context,
+        agents_context=agents_context,
+    )
+    system_message = SystemMessage(content=prompt_parts[0]["content"])
+    return {"messages": [system_message] + list(state.messages)}
 
 
 def call_model(state: AgentState) -> dict:

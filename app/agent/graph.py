@@ -2,7 +2,7 @@ from typing import Literal
 
 from langgraph.graph import END, START, StateGraph
 
-from app.agent.nodes import call_model
+from app.agent.nodes import call_model, load_context_node
 from app.agent.state import AgentState
 
 ROUTE_TOOL_NODE = "tool_node"
@@ -18,7 +18,9 @@ def route_after_model(state: AgentState) -> Literal["tool_node", "done"]:
 
 def build_graph():
     graph = StateGraph(AgentState)
+    graph.add_node("load_context", load_context_node)
     graph.add_node("call_model", call_model)
-    graph.add_edge(START, "call_model")
+    graph.add_edge(START, "load_context")
+    graph.add_edge("load_context", "call_model")
     graph.add_edge("call_model", END)
     return graph.compile()
