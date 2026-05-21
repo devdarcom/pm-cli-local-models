@@ -29,5 +29,5 @@ def build_graph():
         route_after_model,
         {ROUTE_DONE: END, ROUTE_TOOL_NODE: ROUTE_TOOL_NODE},
     )
-    graph.add_edge(ROUTE_TOOL_NODE, END)
+    graph.add_edge(ROUTE_TOOL_NODE, "call_model")
     return graph.compile()
