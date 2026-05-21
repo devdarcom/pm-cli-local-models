@@ -78,6 +78,12 @@ def test_build_prompt_agents_context_appears_before_project_context():
     assert content.index(agents_context) < content.index(project_context)
 
 
+def test_load_agents_md_returns_none_when_file_missing(tmp_path):
+    content = load_agents_md(agents_dir=tmp_path)
+
+    assert content is None
+
+
 def test_load_agents_md_returns_content_when_file_exists(tmp_path):
     agents_md = tmp_path / "AGENTS.md"
     agents_md.write_text("# Zasady clean code")
