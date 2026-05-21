@@ -2,9 +2,16 @@ from pathlib import Path
 from typing import Optional
 
 from langchain_core.messages import SystemMessage
+from langchain_core.tools import tool as langchain_tool
 from langchain_ollama import ChatOllama
 
 from app.agent.state import AgentState
+from app.agent.tools import list_directory, read_file
+
+AGENT_TOOLS = [
+    langchain_tool(read_file),
+    langchain_tool(list_directory),
+]
 
 PROJECT_CONTEXT_FILENAME = "PROJECT.md"
 AGENTS_MD_FILENAME = "AGENTS.md"
@@ -57,7 +64,7 @@ def load_context_node(state: AgentState) -> dict:
 
 
 def call_model(state: AgentState) -> dict:
-    model = ChatOllama(model=state.model_name)
+    model = ChatOllama(model=state.model_name).bind_tools(AGENT_TOOLS)
     response = model.invoke(state.messages)
     return {"messages": state.messages + [response]}
 

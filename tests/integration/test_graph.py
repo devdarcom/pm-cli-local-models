@@ -16,6 +16,7 @@ def test_graph_accepts_user_message_and_returns_response():
          patch("app.agent.nodes.load_project_context", return_value=PROJECT_CONTEXT_MOCK), \
          patch("app.agent.nodes.load_agents_md", return_value=None), \
          patch("app.agent.nodes.ChatOllama") as MockChatOllama:
+        MockChatOllama.return_value.bind_tools.return_value = MockChatOllama.return_value
         MockChatOllama.return_value.invoke.return_value = mock_response
 
         graph = build_graph()
@@ -38,6 +39,7 @@ def test_graph_loads_context_as_system_message_before_model_call():
          patch("app.agent.nodes.load_project_context", return_value=PROJECT_CONTEXT_MOCK), \
          patch("app.agent.nodes.load_agents_md", return_value=None), \
          patch("app.agent.nodes.ChatOllama") as MockChatOllama:
+        MockChatOllama.return_value.bind_tools.return_value = MockChatOllama.return_value
         MockChatOllama.return_value.invoke.return_value = mock_response
 
         graph = build_graph()
@@ -61,6 +63,7 @@ def test_graph_ends_when_model_response_has_no_tool_call():
          patch("app.agent.nodes.load_agents_md", return_value=None), \
          patch("app.agent.nodes.ChatOllama") as MockChatOllama, \
          patch.object(graph_module, "route_after_model", wraps=graph_module.route_after_model) as spy_router:
+        MockChatOllama.return_value.bind_tools.return_value = MockChatOllama.return_value
         MockChatOllama.return_value.invoke.return_value = mock_response
 
         graph = build_graph()
@@ -72,3 +75,33 @@ def test_graph_ends_when_model_response_has_no_tool_call():
 
     spy_router.assert_called_once()
     assert isinstance(result["messages"][-1], AIMessage)
+
+
+def test_graph_calls_tool_node_when_model_returns_tool_call():
+    user_message = HumanMessage(content="Przeczytaj plik main.py")
+    mock_tool_call_response = AIMessage(
+        content="",
+        tool_calls=[{
+            "name": "read_file",
+            "args": {"path": "/nonexistent/path.txt"},
+            "id": "call_1",
+            "type": "tool_call",
+        }],
+    )
+
+    with patch("app.agent.nodes.load_system_prompt", return_value=SYSTEM_PROMPT_MOCK), \
+         patch("app.agent.nodes.load_project_context", return_value=PROJECT_CONTEXT_MOCK), \
+         patch("app.agent.nodes.load_agents_md", return_value=None), \
+         patch("app.agent.nodes.ChatOllama") as MockChatOllama:
+        MockChatOllama.return_value.bind_tools.return_value = MockChatOllama.return_value
+        MockChatOllama.return_value.invoke.return_value = mock_tool_call_response
+
+        graph = build_graph()
+        result = graph.invoke({
+            "session_id": "test-session",
+            "model_name": "gemma3:4b",
+            "messages": [user_message],
+        })
+
+    from langchain_core.messages import ToolMessage
+    assert any(isinstance(m, ToolMessage) for m in result["messages"])
