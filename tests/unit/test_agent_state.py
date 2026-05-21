@@ -15,3 +15,9 @@ def test_agent_state_context_loaded_defaults_to_false():
     state = AgentState(model="gemma3:4b")
 
     assert state.context_loaded is False
+
+
+def test_agent_state_done_defaults_to_false():
+    state = AgentState(model="gemma3:4b")
+
+    assert state.done is False
