@@ -1,4 +1,6 @@
 import pytest
+from pathlib import Path
+from unittest.mock import patch
 
 from app.agent.nodes import load_project_context, load_system_prompt, build_prompt, load_agents_md
 
@@ -83,6 +85,33 @@ def test_build_prompt_agents_context_appears_before_project_context():
 
     content = messages[0]["content"]
     assert content.index(agents_context) < content.index(project_context)
+
+
+def test_load_system_prompt_raises_runtime_error_on_permission_error(tmp_path):
+    prompt_file = tmp_path / "system_prompt.md"
+    prompt_file.write_text("content")
+
+    with patch.object(Path, "read_text", side_effect=PermissionError("denied")):
+        with pytest.raises(RuntimeError):
+            load_system_prompt(prompt_path=prompt_file)
+
+
+def test_load_project_context_raises_runtime_error_on_permission_error(tmp_path):
+    project_md = tmp_path / "PROJECT.md"
+    project_md.write_text("# projekt")
+
+    with patch.object(Path, "read_text", side_effect=PermissionError("denied")):
+        with pytest.raises(RuntimeError):
+            load_project_context(project_dir=tmp_path)
+
+
+def test_load_agents_md_raises_runtime_error_on_permission_error(tmp_path):
+    agents_md = tmp_path / "AGENTS.md"
+    agents_md.write_text("# zasady")
+
+    with patch.object(Path, "read_text", side_effect=PermissionError("denied")):
+        with pytest.raises(RuntimeError):
+            load_agents_md(agents_dir=tmp_path)
 
 
 def test_load_agents_md_returns_none_when_file_missing(tmp_path):
