@@ -15,3 +15,7 @@ def create_session(model: str) -> Session:
     if model not in AVAILABLE_MODELS:
         raise ValueError(f"nieznany model: '{model}'. Dostępne: {sorted(AVAILABLE_MODELS)}")
     return Session(model=model)
+
+
+def reset_session(session: Session) -> None:
+    session.history = []
