@@ -37,3 +37,12 @@ def test_build_prompt_combines_system_prompt_and_project_context():
     assert messages[0]["role"] == "system"
     assert system_prompt in messages[0]["content"]
     assert project_context in messages[0]["content"]
+
+
+def test_build_prompt_skips_project_context_when_none():
+    system_prompt = "Jesteś pomocnym asystentem."
+
+    messages = build_prompt(system_prompt=system_prompt, project_context=None)
+
+    assert len(messages) == 1
+    assert messages[0]["content"] == system_prompt
