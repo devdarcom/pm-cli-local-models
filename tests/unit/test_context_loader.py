@@ -27,15 +27,21 @@ def test_load_system_prompt_returns_file_content(tmp_path):
     assert content == "Jesteś pomocnym asystentem."
 
 
-def test_build_prompt_combines_system_prompt_and_project_context():
+def test_build_prompt_combines_all_three_contexts():
     system_prompt = "Jesteś pomocnym asystentem."
-    project_context = "# Mój projekt\nOpis projektu."
+    agents_context = "# Zasady clean code"
+    project_context = "# Mój projekt"
 
-    messages = build_prompt(system_prompt=system_prompt, project_context=project_context)
+    messages = build_prompt(
+        system_prompt=system_prompt,
+        agents_context=agents_context,
+        project_context=project_context,
+    )
 
     assert len(messages) == 1
     assert messages[0]["role"] == "system"
     assert system_prompt in messages[0]["content"]
+    assert agents_context in messages[0]["content"]
     assert project_context in messages[0]["content"]
 
 
@@ -46,6 +52,30 @@ def test_build_prompt_skips_project_context_when_none():
 
     assert len(messages) == 1
     assert messages[0]["content"] == system_prompt
+
+
+def test_build_prompt_skips_agents_context_when_none():
+    system_prompt = "Jesteś pomocnym asystentem."
+
+    messages = build_prompt(system_prompt=system_prompt, agents_context=None)
+
+    assert len(messages) == 1
+    assert messages[0]["content"] == system_prompt
+
+
+def test_build_prompt_agents_context_appears_before_project_context():
+    system_prompt = "Jesteś pomocnym asystentem."
+    agents_context = "# Zasady"
+    project_context = "# Projekt"
+
+    messages = build_prompt(
+        system_prompt=system_prompt,
+        agents_context=agents_context,
+        project_context=project_context,
+    )
+
+    content = messages[0]["content"]
+    assert content.index(agents_context) < content.index(project_context)
 
 
 def test_load_agents_md_returns_content_when_file_exists(tmp_path):

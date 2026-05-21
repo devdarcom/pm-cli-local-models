@@ -35,9 +35,12 @@ def load_agents_md(agents_dir: Path = Path(".")) -> Optional[str]:
 
 def build_prompt(
     system_prompt: str,
-    project_context: Optional[str],
+    project_context: Optional[str] = None,
+    agents_context: Optional[str] = None,
 ) -> list:
     content = system_prompt
+    if agents_context:
+        content += CONTEXT_SEPARATOR + agents_context
     if project_context:
         content += CONTEXT_SEPARATOR + project_context
     return [{"role": "system", "content": content}]
