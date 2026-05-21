@@ -70,7 +70,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | ID | Typ | Opis | Status |
 |---|---|---|---|
 | G-01 | INT | Graf przyjmuje wiadomość użytkownika i zwraca odpowiedź (mock model) | done |
-| G-02 | INT | Graf ładuje context i dodaje go jako system message przed pierwszym wywołaniem modelu | todo |
+| G-02 | INT | Graf ładuje context i dodaje go jako system message przed pierwszym wywołaniem modelu | done |
 | G-03 | INT | Graf kończy się gdy model nie zwróci `tool_call` (brak dalszych kroków w grafie) | todo |
 | G-04 | INT | Graf wywołuje `tool_node` gdy model zwróci `tool_call` | todo |
 | G-05 | INT | Graf wraca do `call_model` po wykonaniu narzędzia | todo |
@@ -240,7 +240,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Context Loader | 13 | 0 | 0 | 13 | 13 | 0 |
 | AgentState | 4 | 0 | 0 | 4 | 4 | 0 |
 | Narzędzia plików | 11 | 0 | 0 | 11 | 0 | 0 |
-| Graf agenta | 3 | 6 | 0 | 9 | 3 | 0 |
+| Graf agenta | 3 | 6 | 0 | 9 | 4 | 0 |
 | Kolejka | 3 | 1 | 0 | 4 | 0 | 4 |
 | Obsługa błędów | 3 | 3 | 0 | 6 | 0 | 0 |
 | Kompresja | 3 | 3 | 0 | 6 | 0 | 0 |
@@ -252,4 +252,4 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Potwierdzanie akcji | 2 | 3 | 0 | 5 | 0 | 0 |
 | At-Mentions | 8 | 2 | 0 | 10 | 0 | 0 |
 | Scenariusze E2E | 0 | 0 | 7 | 7 | 0 | 0 |
-| **Łącznie** | **77** | **23** | **7** | **107** | **24** | **4** |
+| **Łącznie** | **77** | **23** | **7** | **107** | **25** | **4** |
