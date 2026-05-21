@@ -10,3 +10,9 @@ def test_load_project_context_returns_content_when_file_exists(tmp_path):
     content = load_project_context(project_dir=tmp_path)
 
     assert content == "# Mój projekt"
+
+
+def test_load_project_context_returns_none_when_file_missing(tmp_path):
+    content = load_project_context(project_dir=tmp_path)
+
+    assert content is None
