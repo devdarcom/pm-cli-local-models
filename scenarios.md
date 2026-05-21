@@ -12,7 +12,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło
 | S-01 | UNIT | `create_session()` zwraca Session z poprawnym modelem i pustą historią | done |
 | S-02 | UNIT | `create_session()` z nieznanym modelem rzuca `ValueError` | done |
 | S-03 | UNIT | `reset_session()` czyści historię ale zachowuje model | done |
-| S-04 | UNIT | `session` ma unikalny `session_id` przy każdym wywołaniu `create_session()` | todo |
+| S-04 | UNIT | `session` ma unikalny `session_id` przy każdym wywołaniu `create_session()` | done |
 
 ---
 
@@ -191,7 +191,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło
 
 | Moduł | UNIT | INT | Łącznie | Done |
 |---|---|---|---|---|
-| Session | 4 | 0 | 4 | 3 |
+| Session | 4 | 0 | 4 | 4 |
 | Context Loader | 7 | 0 | 7 | 0 |
 | AgentState | 4 | 0 | 4 | 0 |
 | Narzędzia plików | 11 | 0 | 11 | 0 |
@@ -205,4 +205,4 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło
 | MCP | 2 | 2 | 4 | 0 |
 | Wieloagentowość | 3 | 1 | 4 | 0 |
 | Potwierdzanie akcji | 2 | 3 | 5 | 0 |
-| **Łącznie** | **63** | **21** | **84** | **3** |
+| **Łącznie** | **63** | **21** | **84** | **4** |
