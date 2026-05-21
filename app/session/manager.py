@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 import uuid
 
+AVAILABLE_MODELS = {"gemma3:4b", "gemma:7b", "gemma:2b", "gemma:security"}
+
 
 @dataclass
 class Session:
@@ -10,4 +12,6 @@ class Session:
 
 
 def create_session(model: str) -> Session:
+    if model not in AVAILABLE_MODELS:
+        raise ValueError(f"nieznany model: '{model}'. Dostępne: {sorted(AVAILABLE_MODELS)}")
     return Session(model=model)
