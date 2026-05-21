@@ -22,5 +22,9 @@ def build_graph():
     graph.add_node("call_model", call_model)
     graph.add_edge(START, "load_context")
     graph.add_edge("load_context", "call_model")
-    graph.add_edge("call_model", END)
+    graph.add_conditional_edges(
+        "call_model",
+        route_after_model,
+        {ROUTE_DONE: END, ROUTE_TOOL_NODE: END},
+    )
     return graph.compile()
