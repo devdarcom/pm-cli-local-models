@@ -27,6 +27,10 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | C-05 | UNIT | `build_prompt()` pomija project_context gdy jest `None` | todo |
 | C-06 | UNIT | `load_agents_md()` zwraca treść AGENTS.md gdy plik istnieje | todo |
 | C-07 | UNIT | `load_agents_md()` zwraca `None` gdy AGENTS.md nie istnieje | todo |
+| C-08 | UNIT | `load_system_prompt()` rzuca `RuntimeError` gdy plik nie istnieje (wymagany) | todo |
+| C-09 | UNIT | `load_system_prompt()` rzuca `RuntimeError` gdy brak uprawnień | todo |
+| C-10 | UNIT | `load_project_context()` rzuca `RuntimeError` gdy brak uprawnień | todo |
+| C-11 | UNIT | `load_agents_md()` rzuca `RuntimeError` gdy brak uprawnień | todo |
 
 ---
 
@@ -210,7 +214,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Moduł | UNIT | INT | E2E | Łącznie | Done | Cancelled |
 |---|---|---|---|---|---|---|
 | Session | 4 | 0 | 0 | 4 | 4 | 0 |
-| Context Loader | 7 | 0 | 0 | 7 | 3 | 0 |
+| Context Loader | 11 | 0 | 0 | 11 | 3 | 0 |
 | AgentState | 4 | 0 | 0 | 4 | 4 | 0 |
 | Narzędzia plików | 11 | 0 | 0 | 11 | 0 | 0 |
 | Graf agenta | 3 | 6 | 0 | 9 | 0 | 0 |
@@ -224,4 +228,4 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Wieloagentowość | 3 | 1 | 0 | 4 | 0 | 0 |
 | Potwierdzanie akcji | 2 | 3 | 0 | 5 | 0 | 0 |
 | Scenariusze E2E | 0 | 0 | 7 | 7 | 0 | 0 |
-| **Łącznie** | **63** | **21** | **7** | **91** | **11** | **4** |
+| **Łącznie** | **67** | **21** | **7** | **95** | **11** | **4** |
