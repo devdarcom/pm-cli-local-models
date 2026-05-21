@@ -21,3 +21,9 @@ def test_agent_state_done_defaults_to_false():
     state = AgentState(model="gemma3:4b")
 
     assert state.done is False
+
+
+def test_agent_state_error_count_defaults_to_zero():
+    state = AgentState(model="gemma3:4b")
+
+    assert state.error_count == 0
