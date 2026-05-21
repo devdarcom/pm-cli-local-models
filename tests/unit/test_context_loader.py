@@ -1,6 +1,6 @@
 import pytest
 
-from app.agent.nodes import load_project_context, load_system_prompt, build_prompt
+from app.agent.nodes import load_project_context, load_system_prompt, build_prompt, load_agents_md
 
 
 def test_load_project_context_returns_content_when_file_exists(tmp_path):
@@ -46,3 +46,12 @@ def test_build_prompt_skips_project_context_when_none():
 
     assert len(messages) == 1
     assert messages[0]["content"] == system_prompt
+
+
+def test_load_agents_md_returns_content_when_file_exists(tmp_path):
+    agents_md = tmp_path / "AGENTS.md"
+    agents_md.write_text("# Zasady clean code")
+
+    content = load_agents_md(agents_dir=tmp_path)
+
+    assert content == "# Zasady clean code"
