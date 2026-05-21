@@ -22,7 +22,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 |---|---|---|---|
 | C-01 | UNIT | `load_project_context()` zwraca treść PROJECT.md gdy plik istnieje | done |
 | C-02 | UNIT | `load_project_context()` zwraca `None` gdy PROJECT.md nie istnieje | done |
-| C-03 | UNIT | `load_system_prompt()` zwraca treść pliku system prompt | todo |
+| C-03 | UNIT | `load_system_prompt()` zwraca treść pliku system prompt | done |
 | C-04 | UNIT | `build_prompt()` łączy system_prompt + project_context w jeden message | todo |
 | C-05 | UNIT | `build_prompt()` pomija project_context gdy jest `None` | todo |
 | C-06 | UNIT | `load_agents_md()` zwraca treść AGENTS.md gdy plik istnieje | todo |
@@ -210,7 +210,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Moduł | UNIT | INT | E2E | Łącznie | Done | Cancelled |
 |---|---|---|---|---|---|---|
 | Session | 4 | 0 | 0 | 4 | 4 | 0 |
-| Context Loader | 7 | 0 | 0 | 7 | 2 | 0 |
+| Context Loader | 7 | 0 | 0 | 7 | 3 | 0 |
 | AgentState | 4 | 0 | 0 | 4 | 4 | 0 |
 | Narzędzia plików | 11 | 0 | 0 | 11 | 0 | 0 |
 | Graf agenta | 3 | 6 | 0 | 9 | 0 | 0 |
@@ -224,4 +224,4 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Wieloagentowość | 3 | 1 | 0 | 4 | 0 | 0 |
 | Potwierdzanie akcji | 2 | 3 | 0 | 5 | 0 | 0 |
 | Scenariusze E2E | 0 | 0 | 7 | 7 | 0 | 0 |
-| **Łącznie** | **63** | **21** | **7** | **91** | **10** | **4** |
+| **Łącznie** | **63** | **21** | **7** | **91** | **11** | **4** |
