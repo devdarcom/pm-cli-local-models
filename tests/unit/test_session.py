@@ -24,3 +24,10 @@ def test_reset_session_clears_history_and_preserves_model():
 
     assert session.history == []
     assert session.model == "gemma3:4b"
+
+
+def test_each_session_has_unique_session_id():
+    session_a = create_session(model="gemma3:4b")
+    session_b = create_session(model="gemma3:4b")
+
+    assert session_a.session_id != session_b.session_id
