@@ -1,5 +1,6 @@
+import pytest
 from unittest.mock import patch
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 
 import app.agent.graph as graph_module
 from app.agent.graph import build_graph
@@ -8,78 +9,64 @@ SYSTEM_PROMPT_MOCK = "Jesteś agentem AI."
 PROJECT_CONTEXT_MOCK = "# Projekt testowy"
 
 
-def test_graph_accepts_user_message_and_returns_response():
-    user_message = HumanMessage(content="Cześć, co potrafisz?")
-    mock_response = AIMessage(content="Jestem agentem AI.")
-
+@pytest.fixture
+def mock_ollama_and_context():
+    """Patches context loaders and ChatOllama; wires bind_tools to return the same mock."""
     with patch("app.agent.nodes.load_system_prompt", return_value=SYSTEM_PROMPT_MOCK), \
          patch("app.agent.nodes.load_project_context", return_value=PROJECT_CONTEXT_MOCK), \
          patch("app.agent.nodes.load_agents_md", return_value=None), \
          patch("app.agent.nodes.ChatOllama") as MockChatOllama:
         MockChatOllama.return_value.bind_tools.return_value = MockChatOllama.return_value
-        MockChatOllama.return_value.invoke.return_value = mock_response
+        yield MockChatOllama
 
-        graph = build_graph()
-        result = graph.invoke({
-            "session_id": "test-session",
-            "model_name": "gemma3:4b",
-            "messages": [user_message],
-        })
+
+def test_graph_accepts_user_message_and_returns_response(mock_ollama_and_context):
+    mock_ollama_and_context.return_value.invoke.return_value = AIMessage(content="Jestem agentem AI.")
+
+    graph = build_graph()
+    result = graph.invoke({
+        "session_id": "test-session",
+        "model_name": "gemma3:4b",
+        "messages": [HumanMessage(content="Cześć, co potrafisz?")],
+    })
 
     last_message = result["messages"][-1]
     assert isinstance(last_message, AIMessage)
     assert last_message.content == "Jestem agentem AI."
 
 
-def test_graph_loads_context_as_system_message_before_model_call():
-    user_message = HumanMessage(content="Zrób coś")
-    mock_response = AIMessage(content="OK")
+def test_graph_loads_context_as_system_message_before_model_call(mock_ollama_and_context):
+    mock_ollama_and_context.return_value.invoke.return_value = AIMessage(content="OK")
 
-    with patch("app.agent.nodes.load_system_prompt", return_value=SYSTEM_PROMPT_MOCK), \
-         patch("app.agent.nodes.load_project_context", return_value=PROJECT_CONTEXT_MOCK), \
-         patch("app.agent.nodes.load_agents_md", return_value=None), \
-         patch("app.agent.nodes.ChatOllama") as MockChatOllama:
-        MockChatOllama.return_value.bind_tools.return_value = MockChatOllama.return_value
-        MockChatOllama.return_value.invoke.return_value = mock_response
+    graph = build_graph()
+    graph.invoke({
+        "session_id": "test-session",
+        "model_name": "gemma3:4b",
+        "messages": [HumanMessage(content="Zrób coś")],
+    })
 
-        graph = build_graph()
-        graph.invoke({
-            "session_id": "test-session",
-            "model_name": "gemma3:4b",
-            "messages": [user_message],
-        })
-
-    messages_passed_to_model = MockChatOllama.return_value.invoke.call_args[0][0]
+    messages_passed_to_model = mock_ollama_and_context.return_value.invoke.call_args[0][0]
     assert isinstance(messages_passed_to_model[0], SystemMessage)
     assert SYSTEM_PROMPT_MOCK in messages_passed_to_model[0].content
 
 
-def test_graph_ends_when_model_response_has_no_tool_call():
-    user_message = HumanMessage(content="Jakie jest 2+2?")
-    mock_response = AIMessage(content="4")
+def test_graph_ends_when_model_response_has_no_tool_call(mock_ollama_and_context):
+    mock_ollama_and_context.return_value.invoke.return_value = AIMessage(content="4")
 
-    with patch("app.agent.nodes.load_system_prompt", return_value=SYSTEM_PROMPT_MOCK), \
-         patch("app.agent.nodes.load_project_context", return_value=PROJECT_CONTEXT_MOCK), \
-         patch("app.agent.nodes.load_agents_md", return_value=None), \
-         patch("app.agent.nodes.ChatOllama") as MockChatOllama, \
-         patch.object(graph_module, "route_after_model", wraps=graph_module.route_after_model) as spy_router:
-        MockChatOllama.return_value.bind_tools.return_value = MockChatOllama.return_value
-        MockChatOllama.return_value.invoke.return_value = mock_response
-
+    with patch.object(graph_module, "route_after_model", wraps=graph_module.route_after_model) as spy_router:
         graph = build_graph()
         result = graph.invoke({
             "session_id": "test-session",
             "model_name": "gemma3:4b",
-            "messages": [user_message],
+            "messages": [HumanMessage(content="Jakie jest 2+2?")],
         })
 
     spy_router.assert_called_once()
     assert isinstance(result["messages"][-1], AIMessage)
 
 
-def test_graph_calls_tool_node_when_model_returns_tool_call():
-    user_message = HumanMessage(content="Przeczytaj plik main.py")
-    mock_tool_call_response = AIMessage(
+def test_graph_calls_tool_node_when_model_returns_tool_call(mock_ollama_and_context):
+    mock_ollama_and_context.return_value.invoke.return_value = AIMessage(
         content="",
         tool_calls=[{
             "name": "read_file",
@@ -89,19 +76,11 @@ def test_graph_calls_tool_node_when_model_returns_tool_call():
         }],
     )
 
-    with patch("app.agent.nodes.load_system_prompt", return_value=SYSTEM_PROMPT_MOCK), \
-         patch("app.agent.nodes.load_project_context", return_value=PROJECT_CONTEXT_MOCK), \
-         patch("app.agent.nodes.load_agents_md", return_value=None), \
-         patch("app.agent.nodes.ChatOllama") as MockChatOllama:
-        MockChatOllama.return_value.bind_tools.return_value = MockChatOllama.return_value
-        MockChatOllama.return_value.invoke.return_value = mock_tool_call_response
+    graph = build_graph()
+    result = graph.invoke({
+        "session_id": "test-session",
+        "model_name": "gemma3:4b",
+        "messages": [HumanMessage(content="Przeczytaj plik main.py")],
+    })
 
-        graph = build_graph()
-        result = graph.invoke({
-            "session_id": "test-session",
-            "model_name": "gemma3:4b",
-            "messages": [user_message],
-        })
-
-    from langchain_core.messages import ToolMessage
     assert any(isinstance(m, ToolMessage) for m in result["messages"])
