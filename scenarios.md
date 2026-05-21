@@ -21,7 +21,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | ID | Typ | Opis | Status |
 |---|---|---|---|
 | C-01 | UNIT | `load_project_context()` zwraca treść PROJECT.md gdy plik istnieje | done |
-| C-02 | UNIT | `load_project_context()` zwraca `None` gdy PROJECT.md nie istnieje | todo |
+| C-02 | UNIT | `load_project_context()` zwraca `None` gdy PROJECT.md nie istnieje | done |
 | C-03 | UNIT | `load_system_prompt()` zwraca treść pliku system prompt | todo |
 | C-04 | UNIT | `build_prompt()` łączy system_prompt + project_context w jeden message | todo |
 | C-05 | UNIT | `build_prompt()` pomija project_context gdy jest `None` | todo |
@@ -194,7 +194,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Moduł | UNIT | INT | Łącznie | Done | Cancelled |
 |---|---|---|---|---|---|
 | Session | 4 | 0 | 4 | 4 | 0 |
-| Context Loader | 7 | 0 | 7 | 1 | 0 |
+| Context Loader | 7 | 0 | 7 | 2 | 0 |
 | AgentState | 4 | 0 | 4 | 4 | 0 |
 | Narzędzia plików | 11 | 0 | 11 | 0 | 0 |
 | Graf agenta | 3 | 6 | 9 | 0 | 0 |
@@ -207,4 +207,4 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | MCP | 2 | 2 | 4 | 0 | 0 |
 | Wieloagentowość | 3 | 1 | 4 | 0 | 0 |
 | Potwierdzanie akcji | 2 | 3 | 5 | 0 | 0 |
-| **Łącznie** | **63** | **21** | **84** | **9** | **4** |
+| **Łącznie** | **63** | **21** | **84** | **10** | **4** |
