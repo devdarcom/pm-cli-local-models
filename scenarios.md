@@ -35,7 +35,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło
 | ID | Typ | Opis | Status |
 |---|---|---|---|
 | AS-01 | UNIT | `AgentState` ma pola: `messages`, `model`, `context_loaded`, `done`, `error_count` | done |
-| AS-02 | UNIT | `AgentState.context_loaded` domyślnie `False` | todo |
+| AS-02 | UNIT | `AgentState.context_loaded` domyślnie `False` | done |
 | AS-03 | UNIT | `AgentState.done` domyślnie `False` | todo |
 | AS-04 | UNIT | `AgentState.error_count` domyślnie `0` | todo |
 
@@ -193,7 +193,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło
 |---|---|---|---|---|
 | Session | 4 | 0 | 4 | 4 |
 | Context Loader | 7 | 0 | 7 | 0 |
-| AgentState | 4 | 0 | 4 | 1 |
+| AgentState | 4 | 0 | 4 | 2 |
 | Narzędzia plików | 11 | 0 | 11 | 0 |
 | Graf agenta | 3 | 6 | 9 | 0 |
 | Kolejka | 3 | 1 | 4 | 0 |
@@ -205,4 +205,4 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło
 | MCP | 2 | 2 | 4 | 0 |
 | Wieloagentowość | 3 | 1 | 4 | 0 |
 | Potwierdzanie akcji | 2 | 3 | 5 | 0 |
-| **Łącznie** | **63** | **21** | **84** | **5** |
+| **Łącznie** | **63** | **21** | **84** | **6** |
