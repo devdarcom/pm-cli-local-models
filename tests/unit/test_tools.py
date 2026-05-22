@@ -41,6 +41,12 @@ def test_read_file_returns_error_on_permission_denied(tmp_path):
     assert str(target) in result
 
 
+def test_write_file_returns_error_when_directory_not_found(tmp_path):
+    result = write_file(str(tmp_path / "nonexistent" / "file.txt"), "treść")
+
+    assert "BŁĄD" in result
+
+
 def test_write_file_creates_file_with_given_content(tmp_path):
     target_file = tmp_path / "output.txt"
 
