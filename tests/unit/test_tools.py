@@ -54,6 +54,23 @@ def test_read_file_resolves_unique_filename_in_project_tree(tmp_path, monkeypatc
     assert "print('ok')" in result["data"]
 
 
+def test_read_file_resolves_unique_filename_ignoring_venv_files(tmp_path, monkeypatch):
+    source_dir = tmp_path / "app" / "session"
+    source_dir.mkdir(parents=True)
+    (source_dir / "manager.py").write_text("print('source')")
+
+    venv_dir = tmp_path / ".venv" / "lib"
+    venv_dir.mkdir(parents=True)
+    (venv_dir / "manager.py").write_text("print('venv')")
+
+    monkeypatch.chdir(tmp_path)
+
+    result = read_file("manager.py")
+
+    assert result["ok"] is True
+    assert result["data"] == "print('source')"
+
+
 def test_read_file_returns_disambiguation_when_filename_not_unique(tmp_path, monkeypatch):
     first_dir = tmp_path / "app" / "session"
     second_dir = tmp_path / "tests"
