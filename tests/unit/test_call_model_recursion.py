@@ -73,3 +73,26 @@ def test_call_model_returns_model_error_on_exception() -> None:
     assert result["error_type"] == "model_error"
     assert result["error_node"] == "call_model"
     assert result["last_error"] == "boom"
+
+
+def test_call_model_reuses_bound_model_instance_for_same_model() -> None:
+    first_state = AgentState(
+        session_id="test-session-1",
+        model_name="gemma3:4b",
+        messages=[HumanMessage(content="Pierwsze wywołanie")],
+    )
+    second_state = AgentState(
+        session_id="test-session-2",
+        model_name="gemma3:4b",
+        messages=[HumanMessage(content="Drugie wywołanie")],
+    )
+
+    with patch("app.agent.nodes.ChatOllama") as mock_chat:
+        mock_chat.return_value.bind_tools.return_value = mock_chat.return_value
+        mock_chat.return_value.invoke.return_value = AIMessage(content="OK")
+
+        call_model(first_state)
+        call_model(second_state)
+
+    assert mock_chat.call_count == 1
+    assert mock_chat.return_value.invoke.call_count == 2

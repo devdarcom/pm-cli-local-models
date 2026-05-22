@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.tools import tool as langchain_tool
@@ -21,6 +21,7 @@ AGENTS_MD_FILENAME = "AGENTS.md"
 SYSTEM_PROMPT_FILENAME = "system_prompt.md"
 CONTEXT_SEPARATOR = "\n\n"
 MAX_MODEL_RETRIES = 3
+_BOUND_MODEL_CACHE: dict[tuple[str, int], Any] = {}
 
 
 def load_project_context(project_dir: Path = Path(".")) -> Optional[str]:
@@ -82,6 +83,13 @@ def _order_messages_for_llm(messages: list) -> list:
     return system_msgs + conversation_msgs
 
 
+def _get_bound_model(model_name: str) -> Any:
+    cache_key = (model_name, id(ChatOllama))
+    if cache_key not in _BOUND_MODEL_CACHE:
+        _BOUND_MODEL_CACHE[cache_key] = ChatOllama(model=model_name).bind_tools(AGENT_TOOLS)
+    return _BOUND_MODEL_CACHE[cache_key]
+
+
 def call_model(state: AgentState) -> dict:
     if state.recursion_count >= RECURSION_LIMIT:
         return {
@@ -93,7 +101,7 @@ def call_model(state: AgentState) -> dict:
             ),
         }
 
-    model = ChatOllama(model=state.model_name).bind_tools(AGENT_TOOLS)
+    model = _get_bound_model(state.model_name)
     try:
         response = model.invoke(_order_messages_for_llm(state.messages))
     except Exception as e:
