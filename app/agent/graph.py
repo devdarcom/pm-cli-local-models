@@ -5,6 +5,7 @@ from langgraph.prebuilt import ToolNode
 
 from app.agent.nodes import (
     AGENT_TOOLS,
+    COMPRESSION_MESSAGE_THRESHOLD,
     MAX_MODEL_RETRIES,
     call_model,
     compress_node,
@@ -21,7 +22,6 @@ COMPRESS_NODE = "compress_node"
 ERROR_HANDLER_NODE = "error_handler"
 ESCALATE_NODE = "escalate_to_user"
 ROUTE_DONE = "done"
-COMPRESSION_MESSAGE_THRESHOLD = 6
 
 
 def _should_route_to_compression(state: AgentState) -> bool:
