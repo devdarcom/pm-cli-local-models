@@ -1,4 +1,4 @@
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import BaseMessage, HumanMessage
 
 from app.agent.graph import build_graph
 from app.session.manager import create_session
@@ -9,6 +9,7 @@ EXIT_COMMAND = "exit"
 
 def run_chat_loop(graph, session) -> None:
     print(f"Agent gotowy (model: {session.model}). Wpisz '{EXIT_COMMAND}' aby zakończyć.\n")
+    conversation_messages: list[BaseMessage] = []
 
     while True:
         user_input = input("Ty: ").strip()
@@ -20,11 +21,13 @@ def run_chat_loop(graph, session) -> None:
         if not user_input:
             continue
 
+        turn_messages = conversation_messages + [HumanMessage(content=user_input)]
         result = graph.invoke({
             "session_id": session.session_id,
             "model_name": session.model,
-            "messages": [HumanMessage(content=user_input)],
+            "messages": turn_messages,
         })
+        conversation_messages = list(result["messages"])
 
         last_message = result["messages"][-1]
         print(f"\nAgent: {last_message.content}\n")

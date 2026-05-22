@@ -40,3 +40,14 @@ def test_agent_state_default_values():
     assert state.error_type is None
     assert state.summary is None
     assert state.spawned_agents == []
+
+
+def test_agent_state_uses_independent_list_defaults():
+    state_a = AgentState(model_name="gemma3:4b", session_id="a")
+    state_b = AgentState(model_name="gemma3:4b", session_id="b")
+
+    state_a.messages.append("msg")
+    state_a.spawned_agents.append("agent-a")
+
+    assert state_b.messages == []
+    assert state_b.spawned_agents == []

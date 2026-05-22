@@ -99,3 +99,35 @@ def test_graph_returns_to_call_model_after_tool_execution(mock_ollama_and_contex
 
     assert mock_ollama_and_context.return_value.invoke.call_count == 2
     assert result["messages"][-1].content == "Plik nie istnieje."
+
+
+def test_graph_retries_model_call_after_model_error(mock_ollama_and_context):
+    mock_ollama_and_context.return_value.invoke.side_effect = [
+        RuntimeError("chwilowy błąd"),
+        AIMessage(content="Po retry działa."),
+    ]
+
+    graph = build_graph()
+    result = graph.invoke({
+        "session_id": "test-session",
+        "model_name": "gemma3:4b",
+        "messages": [HumanMessage(content="Spróbuj ponownie")],
+    })
+
+    assert mock_ollama_and_context.return_value.invoke.call_count == 2
+    assert any("FEEDBACK BŁĘDU" in m.content for m in result["messages"] if isinstance(m, HumanMessage))
+    assert result["messages"][-1].content == "Po retry działa."
+
+
+def test_graph_escalates_after_exhausted_retries(mock_ollama_and_context):
+    mock_ollama_and_context.return_value.invoke.side_effect = RuntimeError("ciągły błąd")
+
+    graph = build_graph()
+    result = graph.invoke({
+        "session_id": "test-session",
+        "model_name": "gemma3:4b",
+        "messages": [HumanMessage(content="Zrób zadanie")],
+    })
+
+    assert mock_ollama_and_context.return_value.invoke.call_count == 4
+    assert "Nie udało się wykonać zadania po 3 próbach" in result["messages"][-1].content
