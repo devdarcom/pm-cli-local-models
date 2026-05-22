@@ -120,7 +120,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | K-03 | UNIT | `compress_history()` wynik zawiera tag `[Skompresowany kontekst]` | done |
 | K-04 | INT | `compress_node` wywołuje mały model (`gemma3:4b`) nie model roboczy | done |
 | K-05 | INT | Graf przekierowuje do `compress_node` gdy `messages > THRESHOLD` | done |
-| K-06 | INT | Po kompresji graf kontynuuje odpowiedź użytkownikowi | todo |
+| K-06 | INT | Po kompresji graf kontynuuje odpowiedź użytkownikowi | done |
 
 ---
 
@@ -267,7 +267,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Graf agenta | 3 | 6 | 0 | 9 | 8 | 0 |
 | Kolejka | 3 | 1 | 0 | 4 | 0 | 4 |
 | Obsługa błędów | 3 | 3 | 0 | 6 | 6 | 0 |
-| Kompresja | 3 | 3 | 0 | 6 | 5 | 0 |
+| Kompresja | 3 | 3 | 0 | 6 | 6 | 0 |
 | Backslash Commands | 11 | 0 | 0 | 11 | 0 | 0 |
 | Zmiana modelu | 2 | 1 | 0 | 3 | 0 | 0 |
 | Skille | 5 | 1 | 0 | 6 | 0 | 0 |
@@ -277,4 +277,4 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | At-Mentions | 8 | 2 | 0 | 10 | 0 | 0 |
 | Poprawki (FX) | 10 | 1 | 0 | 11 | 11 | 0 |
 | Scenariusze E2E | 0 | 0 | 7 | 7 | 0 | 0 |
-| **Łącznie** | **89** | **24** | **7** | **120** | **62** | **4** |
+| **Łącznie** | **89** | **24** | **7** | **120** | **63** | **4** |
