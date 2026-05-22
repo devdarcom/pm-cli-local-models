@@ -12,3 +12,18 @@ def test_compress_history_preserves_system_message() -> None:
 
     assert result[0]["role"] == "system"
     assert result[0]["content"] == "Jesteś agentem."
+
+
+def test_compress_history_reduces_messages_to_system_and_summary() -> None:
+    messages = [
+        {"role": "user", "content": "Start rozmowy"},
+        {"role": "system", "content": "Jesteś agentem."},
+        {"role": "assistant", "content": "Krok 1"},
+        {"role": "user", "content": "Krok 2"},
+    ]
+
+    result = compress_history(messages, summary="Skrót")
+
+    assert len(result) == 2
+    assert result[0]["role"] == "system"
+    assert result[0]["content"] == "Jesteś agentem."

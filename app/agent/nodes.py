@@ -176,7 +176,7 @@ def compress_history(messages: list[dict[str, str]], summary: str) -> list[dict[
     if not messages:
         return []
 
-    system_message = messages[0]
+    system_message = next((message for message in messages if message.get("role") == "system"), messages[0])
     summary_message = {
         "role": "assistant",
         "content": f"{COMPRESSED_CONTEXT_PREFIX} {summary}",
