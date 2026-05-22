@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import patch
 
 from app.agent.tools import list_directory, read_file, write_file
 
@@ -27,6 +28,17 @@ def test_read_file_returns_error_when_file_not_found():
 
     assert "BŁĄD" in result
     assert "/nonexistent/path/file.txt" in result
+
+
+def test_read_file_returns_error_on_permission_denied(tmp_path):
+    target = tmp_path / "secret.txt"
+    target.write_text("sekret")
+
+    with patch("app.agent.tools.Path.read_text", side_effect=PermissionError):
+        result = read_file(str(target))
+
+    assert "BŁĄD" in result
+    assert str(target) in result
 
 
 def test_write_file_creates_file_with_given_content(tmp_path):
