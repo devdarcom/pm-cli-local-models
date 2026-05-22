@@ -1,5 +1,6 @@
 import pytest
 from unittest.mock import patch
+from pathlib import Path
 
 from app.agent.tools import (
     MAX_SEARCH_FILE_SIZE,
@@ -85,6 +86,22 @@ def test_read_file_returns_disambiguation_when_filename_not_unique(tmp_path, mon
     assert result["ok"] is False
     assert "wiele plików" in result["error"]
     assert len(result["data"]["candidates"]) == 2
+
+
+def test_read_file_returns_sorted_candidates_when_filename_not_unique():
+    unresolved_candidates = [Path("tests/manager.py"), Path("app/session/manager.py")]
+
+    with patch(
+        "app.agent.tools._resolve_filename_candidates",
+        return_value=unresolved_candidates,
+    ):
+        result = read_file("manager.py")
+
+    assert result["ok"] is False
+    assert result["data"]["candidates"] == [
+        "app/session/manager.py",
+        "tests/manager.py",
+    ]
 
 
 def test_read_file_returns_error_on_permission_denied(tmp_path):

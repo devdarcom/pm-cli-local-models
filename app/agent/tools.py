@@ -3,6 +3,7 @@ from typing import Any
 
 MAX_SEARCH_FILE_SIZE = 1_000_000
 FILENAME_SEARCH_EXCLUDED_DIRS = {".venv", ".git", "__pycache__"}
+MAX_CANDIDATE_SUGGESTIONS = 5
 
 
 def _success_result(data: Any) -> dict[str, Any]:
@@ -24,6 +25,10 @@ def _resolve_filename_candidates(filename: str) -> list[Path]:
     return sorted(candidates)
 
 
+def _build_sorted_candidate_paths(candidates: list[Path]) -> list[str]:
+    return sorted(str(candidate) for candidate in candidates)
+
+
 def read_file(path: str) -> dict[str, Any]:
     """Odczytaj zawartość pliku tekstowego."""
     target_path = Path(path)
@@ -40,7 +45,9 @@ def read_file(path: str) -> dict[str, Any]:
                 except PermissionError:
                     return _error_result(f"BŁĄD: Brak uprawnień do odczytu: {resolved_path}")
             if len(candidates) > 1:
-                candidate_paths = [str(candidate) for candidate in candidates[:5]]
+                candidate_paths = _build_sorted_candidate_paths(candidates)[
+                    :MAX_CANDIDATE_SUGGESTIONS
+                ]
                 return _error_result(
                     (
                         f"BŁĄD: Znaleziono wiele plików o nazwie: {path}. "
