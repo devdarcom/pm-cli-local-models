@@ -1,9 +1,18 @@
 from unittest.mock import patch
 
+import pytest
 from langchain_core.messages import AIMessage, HumanMessage
 
+from app.agent import nodes
 from app.agent.nodes import call_model
 from app.agent.state import AgentState, RECURSION_LIMIT
+
+
+@pytest.fixture(autouse=True)
+def clear_bound_model_cache() -> None:
+    nodes._BOUND_MODEL_CACHE.clear()
+    yield
+    nodes._BOUND_MODEL_CACHE.clear()
 
 
 def test_call_model_increments_recursion_count() -> None:

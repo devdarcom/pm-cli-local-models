@@ -21,7 +21,7 @@ AGENTS_MD_FILENAME = "AGENTS.md"
 SYSTEM_PROMPT_FILENAME = "system_prompt.md"
 CONTEXT_SEPARATOR = "\n\n"
 MAX_MODEL_RETRIES = 3
-_BOUND_MODEL_CACHE: dict[tuple[str, int], Any] = {}
+_BOUND_MODEL_CACHE: dict[str, Any] = {}
 
 
 def load_project_context(project_dir: Path = Path(".")) -> Optional[str]:
@@ -84,10 +84,9 @@ def _order_messages_for_llm(messages: list) -> list:
 
 
 def _get_bound_model(model_name: str) -> Any:
-    cache_key = (model_name, id(ChatOllama))
-    if cache_key not in _BOUND_MODEL_CACHE:
-        _BOUND_MODEL_CACHE[cache_key] = ChatOllama(model=model_name).bind_tools(AGENT_TOOLS)
-    return _BOUND_MODEL_CACHE[cache_key]
+    if model_name not in _BOUND_MODEL_CACHE:
+        _BOUND_MODEL_CACHE[model_name] = ChatOllama(model=model_name).bind_tools(AGENT_TOOLS)
+    return _BOUND_MODEL_CACHE[model_name]
 
 
 def call_model(state: AgentState) -> dict:
