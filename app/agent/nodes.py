@@ -62,12 +62,11 @@ def load_context_node(state: AgentState) -> dict:
     project_dir = Path(".")
     system_prompt = load_system_prompt(project_dir / SYSTEM_PROMPT_FILENAME)
     project_context = load_project_context(project_dir)
-    agents_context = load_agents_md(project_dir)
 
+    # AGENTS.md is a developer guide — not injected into the model context.
     prompt_parts = build_prompt(
         system_prompt=system_prompt,
         project_context=project_context,
-        agents_context=agents_context,
     )
     system_message = SystemMessage(content=prompt_parts[0]["content"])
     return {"messages": [system_message] + list(state.messages)}
