@@ -57,7 +57,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | T-04 | UNIT | `write_file()` tworzy plik z podaną treścią | done |
 | T-05 | UNIT | `write_file()` zwraca error dict gdy katalog nie istnieje | done |
 | T-06 | UNIT | `list_directory()` zwraca listę plików w katalogu | done |
-| T-07 | UNIT | `list_directory()` zwraca error dict gdy katalog nie istnieje | todo |
+| T-07 | UNIT | `list_directory()` zwraca error dict gdy katalog nie istnieje | done |
 | T-08 | UNIT | `delete_file()` usuwa plik i zwraca status ok | todo |
 | T-09 | UNIT | `delete_file()` zwraca error dict gdy plik nie istnieje | todo |
 | T-10 | UNIT | `search_in_files()` zwraca listę plików zawierających frazę | todo |
