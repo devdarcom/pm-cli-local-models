@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch
 
-from app.agent.tools import delete_file, list_directory, read_file, write_file
+from app.agent.tools import delete_file, list_directory, read_file, search_in_files, write_file
 
 
 def test_read_file_returns_content_when_file_exists(tmp_path):
@@ -39,6 +39,24 @@ def test_read_file_returns_error_on_permission_denied(tmp_path):
 
     assert "BŁĄD" in result
     assert str(target) in result
+
+
+def test_search_in_files_returns_files_containing_phrase(tmp_path):
+    (tmp_path / "match.txt").write_text("szukana fraza tutaj")
+    (tmp_path / "no_match.txt").write_text("zupełnie inna treść")
+
+    result = search_in_files(str(tmp_path), "szukana fraza")
+
+    assert "match.txt" in result
+    assert "no_match.txt" not in result
+
+
+def test_search_in_files_returns_empty_list_when_phrase_not_found(tmp_path):
+    (tmp_path / "plik.txt").write_text("brak pasującej treści")
+
+    result = search_in_files(str(tmp_path), "nieistniejąca fraza")
+
+    assert result == []
 
 
 def test_delete_file_returns_error_when_file_not_found():
