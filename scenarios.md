@@ -63,7 +63,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | T-10 | UNIT | `search_in_files()` zwraca listę plików zawierających frazę | done |
 | T-11 | UNIT | `search_in_files()` zwraca pustą listę gdy fraza nie znaleziona | done |
 | T-12 | UNIT | `read_file()` rozpoznaje unikalną nazwę pliku rekurencyjnie w projekcie (np. `manager.py`) | done |
-| T-13 | UNIT | `read_file()` zwraca błąd z kandydatami gdy nazwa pliku jest niejednoznaczna | todo |
+| T-13 | UNIT | `read_file()` zwraca błąd z kandydatami gdy nazwa pliku jest niejednoznaczna | done |
 
 ---
 
@@ -263,7 +263,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Session | 4 | 0 | 0 | 4 | 4 | 0 |
 | Context Loader | 13 | 0 | 0 | 13 | 13 | 0 |
 | AgentState | 4 | 0 | 0 | 4 | 4 | 0 |
-| Narzędzia plików | 13 | 0 | 0 | 13 | 12 | 0 |
+| Narzędzia plików | 13 | 0 | 0 | 13 | 13 | 0 |
 | Graf agenta | 3 | 6 | 0 | 9 | 9 | 0 |
 | Kolejka | 3 | 1 | 0 | 4 | 0 | 4 |
 | Obsługa błędów | 3 | 3 | 0 | 6 | 6 | 0 |
@@ -277,4 +277,4 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | At-Mentions | 8 | 2 | 0 | 10 | 0 | 0 |
 | Poprawki (FX) | 10 | 1 | 0 | 11 | 11 | 0 |
 | Scenariusze E2E | 0 | 0 | 7 | 7 | 0 | 0 |
-| **Łącznie** | **89** | **24** | **7** | **120** | **65** | **4** |
+| **Łącznie** | **89** | **24** | **7** | **120** | **66** | **4** |
