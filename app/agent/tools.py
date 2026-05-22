@@ -21,6 +21,17 @@ def list_directory(path: str) -> list[str]:
         return [f"BŁĄD: Brak uprawnień do odczytu: {path}"]
 
 
+def delete_file(path: str) -> str:
+    """Usuń plik z systemu plików."""
+    try:
+        Path(path).unlink()
+        return f"✓ Usunięto plik: {path}"
+    except FileNotFoundError:
+        return f"BŁĄD: Plik nie istnieje: {path}"
+    except PermissionError:
+        return f"BŁĄD: Brak uprawnień do usunięcia: {path}"
+
+
 def write_file(path: str, content: str) -> str:
     """Zapisz treść do pliku. Nadpisuje jeśli istnieje. Katalog nadrzędny musi istnieć."""
     try:

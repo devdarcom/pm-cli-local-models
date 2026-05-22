@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch
 
-from app.agent.tools import list_directory, read_file, write_file
+from app.agent.tools import delete_file, list_directory, read_file, write_file
 
 
 def test_read_file_returns_content_when_file_exists(tmp_path):
@@ -39,6 +39,16 @@ def test_read_file_returns_error_on_permission_denied(tmp_path):
 
     assert "BŁĄD" in result
     assert str(target) in result
+
+
+def test_delete_file_removes_file_and_returns_status(tmp_path):
+    target = tmp_path / "to_delete.txt"
+    target.write_text("zawartość")
+
+    result = delete_file(str(target))
+
+    assert not target.exists()
+    assert "to_delete.txt" in result
 
 
 def test_list_directory_returns_error_when_directory_not_found():
