@@ -21,6 +21,7 @@ AGENTS_MD_FILENAME = "AGENTS.md"
 SYSTEM_PROMPT_FILENAME = "system_prompt.md"
 CONTEXT_SEPARATOR = "\n\n"
 MAX_MODEL_RETRIES = 3
+COMPRESSION_MODEL_NAME = "gemma3:4b"
 COMPRESSED_CONTEXT_PREFIX = "[Skompresowany kontekst]"
 _BOUND_MODEL_CACHE: dict[str, Any] = {}
 
@@ -182,3 +183,23 @@ def compress_history(messages: list[dict[str, str]], summary: str) -> list[dict[
         "content": f"{COMPRESSED_CONTEXT_PREFIX} {summary}",
     }
     return [system_message, summary_message]
+
+
+def _format_messages_for_summary(messages: list[Any]) -> str:
+    formatted_lines: list[str] = []
+    for message in messages:
+        role = getattr(message, "type", message.__class__.__name__)
+        content = getattr(message, "content", str(message))
+        formatted_lines.append(f"{role}: {content}")
+    return "\n".join(formatted_lines)
+
+
+def compress_node(state: AgentState) -> dict:
+    compression_prompt = (
+        "Skompresuj poniższą historię rozmowy do krótkiego podsumowania, "
+        "zachowując kluczowe decyzje i stan zadania.\n\n"
+        f"{_format_messages_for_summary(state.messages)}"
+    )
+    compression_model = ChatOllama(model=COMPRESSION_MODEL_NAME)
+    response = compression_model.invoke([HumanMessage(content=compression_prompt)])
+    return {"summary": response.content}
