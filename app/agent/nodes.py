@@ -69,7 +69,10 @@ def load_context_node(state: AgentState) -> dict:
 def call_model(state: AgentState) -> dict:
     model = ChatOllama(model=state.model_name).bind_tools(AGENT_TOOLS)
     response = model.invoke(state.messages)
-    return {"messages": state.messages + [response]}
+    return {
+        "messages": state.messages + [response],
+        "recursion_count": state.recursion_count + 1,
+    }
 
 
 def build_prompt(
