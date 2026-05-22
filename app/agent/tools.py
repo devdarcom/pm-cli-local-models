@@ -22,11 +22,11 @@ def list_directory(path: str) -> list[str]:
 
 
 def write_file(path: str, content: str) -> str:
-    """Zapisz treść do pliku. Tworzy plik jeśli nie istnieje, nadpisuje jeśli istnieje."""
+    """Zapisz treść do pliku. Nadpisuje jeśli istnieje. Katalog nadrzędny musi istnieć."""
     try:
-        target = Path(path)
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(content, encoding="utf-8")
+        Path(path).write_text(content, encoding="utf-8")
         return f"✓ Zapisano plik: {path}"
+    except FileNotFoundError:
+        return f"BŁĄD: Katalog nie istnieje: {path}"
     except PermissionError:
         return f"BŁĄD: Brak uprawnień do zapisu: {path}"
