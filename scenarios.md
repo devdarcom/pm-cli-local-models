@@ -232,7 +232,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | FX-04 | UNIT | `call_model` inkrementuje `recursion_count` w zwracanym stanie | done |
 | FX-05 | INT | `load_context_node` wstrzykuje system message tylko gdy `messages` są puste — nie przy każdym `graph.invoke()` | done |
 | FX-06 | UNIT | `AVAILABLE_MODELS` zawiera modele ze wsparciem tools API (`llama3.2:3b`, `qwen2.5:3b`) zamiast modeli Gemma | done |
-| FX-07 | UNIT | `call_model` nie tworzy nowego `ChatOllama` przy każdym wywołaniu — model konfigurowany raz | todo |
+| FX-07 | UNIT | `call_model` nie tworzy nowego `ChatOllama` przy każdym wywołaniu — model konfigurowany raz | done |
 | FX-08 | UNIT | `search_in_files` pomija pliki większe niż `MAX_SEARCH_FILE_SIZE` | done |
 | FX-09 | UNIT | `search_in_files` przeszukuje rekurencyjnie podkatalogi (`rglob` zamiast `iterdir`) | done |
 | FX-10 | UNIT | `AgentState` odrzuca nieznane pola przy inicjalizacji (`extra="forbid"`) — test walidacji | done |
@@ -275,6 +275,6 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Wieloagentowość | 3 | 1 | 0 | 4 | 0 | 0 |
 | Potwierdzanie akcji | 2 | 3 | 0 | 5 | 0 | 0 |
 | At-Mentions | 8 | 2 | 0 | 10 | 0 | 0 |
-| Poprawki (FX) | 10 | 1 | 0 | 11 | 10 | 0 |
+| Poprawki (FX) | 10 | 1 | 0 | 11 | 11 | 0 |
 | Scenariusze E2E | 0 | 0 | 7 | 7 | 0 | 0 |
-| **Łącznie** | **89** | **24** | **7** | **120** | **56** | **4** |
+| **Łącznie** | **89** | **24** | **7** | **120** | **57** | **4** |
