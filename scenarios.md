@@ -79,7 +79,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | G-06 | INT | Graf zatrzymuje się po `recursion_limit` krokach | done |
 | G-07 | UNIT | Router zwraca `"tool_node"` gdy response zawiera `tool_call` | done |
 | G-08 | UNIT | Router zwraca `"done"` gdy response nie zawiera `tool_call` | done |
-| G-09 | UNIT | Router zwraca `"compress"` gdy liczba wiadomości > `COMPRESSION_THRESHOLD` | todo |
+| G-09 | UNIT | Router zwraca `"compress"` gdy liczba wiadomości > `COMPRESSION_THRESHOLD` | done |
 
 ---
 
@@ -264,7 +264,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Context Loader | 13 | 0 | 0 | 13 | 13 | 0 |
 | AgentState | 4 | 0 | 0 | 4 | 4 | 0 |
 | Narzędzia plików | 13 | 0 | 0 | 13 | 11 | 0 |
-| Graf agenta | 3 | 6 | 0 | 9 | 8 | 0 |
+| Graf agenta | 3 | 6 | 0 | 9 | 9 | 0 |
 | Kolejka | 3 | 1 | 0 | 4 | 0 | 4 |
 | Obsługa błędów | 3 | 3 | 0 | 6 | 6 | 0 |
 | Kompresja | 3 | 3 | 0 | 6 | 6 | 0 |
@@ -277,4 +277,4 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | At-Mentions | 8 | 2 | 0 | 10 | 0 | 0 |
 | Poprawki (FX) | 10 | 1 | 0 | 11 | 11 | 0 |
 | Scenariusze E2E | 0 | 0 | 7 | 7 | 0 | 0 |
-| **Łącznie** | **89** | **24** | **7** | **120** | **63** | **4** |
+| **Łącznie** | **89** | **24** | **7** | **120** | **64** | **4** |
