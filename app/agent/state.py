@@ -1,5 +1,6 @@
-from typing import Optional
+from typing import Annotated, Optional
 from pydantic import BaseModel, ConfigDict, field_validator
+from langgraph.graph.message import add_messages
 
 RECURSION_LIMIT = 25
 
@@ -7,7 +8,7 @@ RECURSION_LIMIT = 25
 class AgentState(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    messages: list = []
+    messages: Annotated[list, add_messages] = []
     session_id: str
     model_name: str
     recursion_count: int = 0
