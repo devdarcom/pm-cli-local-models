@@ -195,6 +195,16 @@ def _format_messages_for_summary(messages: list[Any]) -> str:
     return "\n".join(formatted_lines)
 
 
+def _select_system_or_first_message(messages: list[Any]) -> Optional[Any]:
+    if not messages:
+        return None
+    return next((message for message in messages if isinstance(message, SystemMessage)), messages[0])
+
+
+def _build_summary_ai_message(summary_content: str) -> AIMessage:
+    return AIMessage(content=f"{COMPRESSED_CONTEXT_PREFIX} {summary_content}")
+
+
 def compress_node(state: AgentState) -> dict:
     compression_prompt = (
         "Skompresuj poniższą historię rozmowy do krótkiego podsumowania, "
@@ -203,4 +213,9 @@ def compress_node(state: AgentState) -> dict:
     )
     compression_model = ChatOllama(model=COMPRESSION_MODEL_NAME)
     response = compression_model.invoke([HumanMessage(content=compression_prompt)])
-    return {"summary": response.content}
+    compressed_messages: list[Any] = []
+    preserved_message = _select_system_or_first_message(state.messages)
+    if preserved_message is not None:
+        compressed_messages.append(preserved_message)
+    compressed_messages.append(_build_summary_ai_message(response.content))
+    return {"messages": compressed_messages, "summary": response.content}

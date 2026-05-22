@@ -175,3 +175,27 @@ def test_graph_routes_to_compress_node_when_messages_exceed_threshold(mock_ollam
     spy_compress_node.assert_called_once()
     assert mock_ollama_and_context.return_value.invoke.call_count == 2
     assert result["messages"][-1].content == "Ostateczna odpowiedź po kompresji."
+
+
+def test_graph_continues_user_response_after_compression(mock_ollama_and_context):
+    mock_ollama_and_context.return_value.invoke.side_effect = [
+        AIMessage(content="Odpowiedź przed kompresją."),
+        AIMessage(content="Skrót kontekstu"),
+        AIMessage(content="Odpowiedź końcowa dla użytkownika."),
+    ]
+    long_history = [HumanMessage(content=f"Wiadomość {index}") for index in range(8)]
+
+    graph = build_graph()
+    result = graph.invoke({
+        "session_id": "test-session",
+        "model_name": "gemma3:4b",
+        "messages": long_history,
+    })
+
+    compressed_messages = [
+        message
+        for message in result["messages"]
+        if isinstance(message, AIMessage) and message.content.startswith("[Skompresowany kontekst]")
+    ]
+    assert compressed_messages
+    assert result["messages"][-1].content == "Odpowiedź końcowa dla użytkownika."
