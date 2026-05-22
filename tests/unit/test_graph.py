@@ -59,3 +59,15 @@ def test_router_routes_to_escalation_when_retries_exhausted():
     result = route_after_model(state)
 
     assert result == "escalate_to_user"
+
+
+def test_router_routes_to_compress_when_messages_exceed_threshold():
+    state = AgentState(
+        session_id="s1",
+        model_name="gemma3:4b",
+        messages=[AIMessage(content=f"msg-{index}") for index in range(7)],
+    )
+
+    result = route_after_model(state)
+
+    assert result == "compress"
