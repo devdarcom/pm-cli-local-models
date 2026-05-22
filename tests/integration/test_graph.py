@@ -150,3 +150,28 @@ def test_compress_node_uses_dedicated_compression_model():
     mock_chat.assert_called_once_with(model="gemma3:4b")
     assert mock_chat.return_value.invoke.call_count == 1
     assert result["summary"] == "Skrót kontekstu"
+
+
+def test_graph_routes_to_compress_node_when_messages_exceed_threshold(mock_ollama_and_context):
+    mock_ollama_and_context.return_value.invoke.side_effect = [
+        AIMessage(content="Pierwsza odpowiedź modelu."),
+        AIMessage(content="Ostateczna odpowiedź po kompresji."),
+    ]
+    long_history = [HumanMessage(content=f"Wiadomość {index}") for index in range(8)]
+
+    with patch.object(
+        graph_module,
+        "compress_node",
+        create=True,
+        return_value={"summary": "Skrót rozmowy"},
+    ) as spy_compress_node:
+        graph = build_graph()
+        result = graph.invoke({
+            "session_id": "test-session",
+            "model_name": "gemma3:4b",
+            "messages": long_history,
+        })
+
+    spy_compress_node.assert_called_once()
+    assert mock_ollama_and_context.return_value.invoke.call_count == 2
+    assert result["messages"][-1].content == "Ostateczna odpowiedź po kompresji."
