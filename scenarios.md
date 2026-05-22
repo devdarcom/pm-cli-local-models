@@ -128,7 +128,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 
 | ID | Typ | Opis | Status |
 |---|---|---|---|
-| B-01 | UNIT | `parse_command("\new")` zwraca `Command.NEW` | todo |
+| B-01 | UNIT | `parse_command("\new")` zwraca `Command.NEW` | done |
 | B-02 | UNIT | `parse_command("\reset")` zwraca `Command.RESET` | todo |
 | B-03 | UNIT | `parse_command("\compress")` zwraca `Command.COMPRESS` | todo |
 | B-04 | UNIT | `parse_command("\model llama3.2:3b")` zwraca `Command.MODEL` z arg `"llama3.2:3b"` | todo |
@@ -268,7 +268,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Kolejka | 3 | 1 | 0 | 4 | 0 | 4 |
 | Obsługa błędów | 3 | 3 | 0 | 6 | 6 | 0 |
 | Kompresja | 3 | 3 | 0 | 6 | 6 | 0 |
-| Backslash Commands | 11 | 0 | 0 | 11 | 0 | 0 |
+| Backslash Commands | 11 | 0 | 0 | 11 | 1 | 0 |
 | Zmiana modelu | 2 | 1 | 0 | 3 | 0 | 0 |
 | Skille | 5 | 1 | 0 | 6 | 0 | 0 |
 | MCP | 2 | 2 | 0 | 4 | 0 | 0 |
@@ -277,4 +277,4 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | At-Mentions | 8 | 2 | 0 | 10 | 0 | 0 |
 | Poprawki (FX) | 10 | 1 | 0 | 11 | 11 | 0 |
 | Scenariusze E2E | 0 | 0 | 7 | 7 | 0 | 0 |
-| **Łącznie** | **89** | **24** | **7** | **120** | **66** | **4** |
+| **Łącznie** | **89** | **24** | **7** | **120** | **67** | **4** |
