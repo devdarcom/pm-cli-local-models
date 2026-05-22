@@ -60,8 +60,8 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | T-07 | UNIT | `list_directory()` zwraca error dict gdy katalog nie istnieje | done |
 | T-08 | UNIT | `delete_file()` usuwa plik i zwraca status ok | done |
 | T-09 | UNIT | `delete_file()` zwraca error dict gdy plik nie istnieje | done |
-| T-10 | UNIT | `search_in_files()` zwraca listę plików zawierających frazę | todo |
-| T-11 | UNIT | `search_in_files()` zwraca pustą listę gdy fraza nie znaleziona | todo |
+| T-10 | UNIT | `search_in_files()` zwraca listę plików zawierających frazę | done |
+| T-11 | UNIT | `search_in_files()` zwraca pustą listę gdy fraza nie znaleziona | done |
 
 ---
 
@@ -239,7 +239,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Session | 4 | 0 | 0 | 4 | 4 | 0 |
 | Context Loader | 13 | 0 | 0 | 13 | 13 | 0 |
 | AgentState | 4 | 0 | 0 | 4 | 4 | 0 |
-| Narzędzia plików | 11 | 0 | 0 | 11 | 3 | 0 |
+| Narzędzia plików | 11 | 0 | 0 | 11 | 11 | 0 |
 | Graf agenta | 3 | 6 | 0 | 9 | 7 | 0 |
 | Kolejka | 3 | 1 | 0 | 4 | 0 | 4 |
 | Obsługa błędów | 3 | 3 | 0 | 6 | 0 | 0 |
@@ -252,4 +252,4 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Potwierdzanie akcji | 2 | 3 | 0 | 5 | 0 | 0 |
 | At-Mentions | 8 | 2 | 0 | 10 | 0 | 0 |
 | Scenariusze E2E | 0 | 0 | 7 | 7 | 0 | 0 |
-| **Łącznie** | **77** | **23** | **7** | **107** | **31** | **4** |
+| **Łącznie** | **77** | **23** | **7** | **107** | **39** | **4** |
