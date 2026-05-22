@@ -66,6 +66,43 @@ You can't run it live, but you can reason about it from the diff:
   on an empty implementation (i.e. it's not trivially always-passing)
 - A test that always passes regardless of the implementation is not a real test
 
+## Step 3b — Check architecture compliance
+
+Verify that the changed files respect the module boundaries defined in `opis-projektu.md`.
+
+Answer these questions for every file in the diff:
+
+**a) Is the file in the correct module?**
+Cross-check the file path against the directory structure from `opis-projektu.md`:
+- `app/agent/tools.py` — only file I/O tools (read, write, list, delete, search). No graph logic, no LangGraph imports.
+- `app/agent/nodes.py` — LangGraph node functions and `AGENT_TOOLS` list. No direct Textual/TUI imports.
+- `app/agent/graph.py` — graph topology only (`StateGraph`, edges, `build_graph()`). No business logic.
+- `app/agent/state.py` — `AgentState` Pydantic model only. No node logic, no tools.
+- `app/session/` — session creation, reset, model management. No LangGraph graph imports.
+- `app/tui/` — Textual UI, at-mention helpers. No direct `ChatOllama` calls.
+- `app/skills/` — skill loading utilities. No graph construction.
+- `app/mcp/` — MCP client only. No session or graph logic.
+
+**b) Do imports respect the dependency hierarchy?**
+Allowed import direction (top → bottom, never reverse):
+```
+graph.py → nodes.py → tools.py
+graph.py → state.py
+nodes.py → state.py
+tui/ → session/
+tui/ → agent/graph.py (invoke only)
+```
+A **reverse import** (e.g. `tools.py` importing from `nodes.py`, or `state.py` importing from `graph.py`) is always a blocker.
+
+**c) Is the new constant or class placed in the right file?**
+- Model lists (`AVAILABLE_MODELS`) → `app/session/` or `app/agent/nodes.py` (if needed for binding)
+- Graph constants (`COMPRESSION_THRESHOLD`, `HOT_CONTEXT_MESSAGES`) → `app/agent/nodes.py`
+- State schema changes → `app/agent/state.py`
+- Tool-level constants (`MAX_SEARCH_FILE_SIZE`) → `app/agent/tools.py`
+
+**d) Does the `queue/` directory exist?**
+Per architectural decision in `opis-projektu.md`, the `queue/` module was cancelled. If any PR adds files under `app/queue/`, it is a blocker.
+
 ## Step 4 — Check each AGENTS.md rule
 
 Go through all 10 rules from `AGENTS.md` and evaluate the changed code against each one.
@@ -100,6 +137,15 @@ Use this exact template:
 - **Test obecny:** ✅ / ❌
 - **Test nie jest trywialny:** ✅ / ❌
 - **Lokalizacja testu:** `tests/unit/test_X.py::test_function_name`
+
+### Architektura
+
+| Sprawdzenie | Status | Uwaga |
+|---|---|---|
+| Właściwy moduł | ✅/❌ | Plik trafił do katalogu zgodnego z opis-projektu.md |
+| Kierunek importów | ✅/❌ | Import nie idzie "w górę" hierarchii (tools ← nodes ← graph) |
+| Lokalizacja stałych/klas | ✅/❌ | Stałe i klasy zdefiniowane w odpowiednim pliku |
+| Brak `app/queue/` | ✅/❌ | Moduł kolejki nie istnieje (anulowany per opis-projektu.md) |
 
 ### Zasady AGENTS.md
 
@@ -136,6 +182,7 @@ FAIL → PR wymaga poprawek. Lista blokerów powyżej.
 - Test jest trywialny (zawsze przechodzi niezależnie od implementacji)
 - Test jest w złym katalogu (UNIT w `integration/` lub odwrotnie)
 - Jakakolwiek zasada AGENTS.md ma status ❌
+- Jakakolwiek kontrola architektoniczna (Step 3b) ma status ❌
 
 **PASS** tylko gdy wszystkie zasady ✅ i test jest poprawny.
 

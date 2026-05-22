@@ -120,12 +120,21 @@ Note the PR number from the output.
 
 ## Step 6 — Invoke code-review
 
-Now hand off to the code-review skill. Pass:
-- Scenario ID
-- PR number
+Hand off to the code-review skill by launching it as a **subagent with model Opus 4.7**.
+Use the Task tool with:
+- `subagent_type: "generalPurpose"`
+- `model: "claude-opus-4-7-thinking-xhigh"`
+- Pass the scenario ID, PR number, and Attempt: 1 in the prompt
+
+Example prompt to pass:
+```
+Uruchom skill code-review dla:
+- Scenario ID: <ID>
+- PR number: #<NUMBER>
 - Attempt: 1
 
-The code-review skill will produce a PASS or FAIL verdict.
+Przeczytaj skill z: .cursor/skills/code-review/SKILL.md i wykonaj pełny review.
+```
 
 ### If PASS:
 ```bash
