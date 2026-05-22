@@ -20,7 +20,24 @@ If no scenario ID was given, ask the user for one before proceeding.
 
 ## Step A — Architecture alignment (mandatory first step)
 
-Run skill: `.cursor/skills/architecture-alignment/SKILL.md` before any coding work.
+Spawn a dedicated subagent for architecture alignment before any coding work.
+The parent `code-spec` skill must not execute alignment logic directly.
+
+Subagent requirements:
+- `subagent_type: "generalPurpose"`
+- Prompt the subagent to read and use:
+  - `.cursor/skills/architecture-alignment/SKILL.md`
+- Pass scenario ID and scenario description to the subagent.
+
+Suggested subagent prompt:
+```
+Przygotuj alignment architektoniczny dla scenariusza <SCENARIO_ID>.
+Użyj skilla: .cursor/skills/architecture-alignment/SKILL.md
+Wygeneruj TASK_CONTEXT.md zgodnie z tym skillem i zwróć:
+- confidence
+- red flags
+- krótkie podsumowanie ograniczeń implementacyjnych.
+```
 
 Input for alignment:
 - scenario ID
