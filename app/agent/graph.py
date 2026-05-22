@@ -18,7 +18,7 @@ from app.agent.state import AgentState
 LOAD_CONTEXT_NODE = "load_context"
 CALL_MODEL_NODE = "call_model"
 ROUTE_TOOL_NODE = "tool_node"
-COMPRESS_NODE = "compress_node"
+COMPRESS_NODE = "compress"
 ERROR_HANDLER_NODE = "error_handler"
 ESCALATE_NODE = "escalate_to_user"
 ROUTE_DONE = "done"
@@ -32,7 +32,7 @@ def _should_route_to_compression(state: AgentState) -> bool:
 
 def route_after_model(
     state: AgentState,
-) -> Literal["tool_node", "done", "error_handler", "escalate_to_user", "compress_node"]:
+) -> Literal["tool_node", "done", "error_handler", "escalate_to_user", "compress"]:
     if state.error_type == "recursion_limit":
         return ESCALATE_NODE
     if state.error_type == "model_error":
