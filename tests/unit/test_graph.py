@@ -1,6 +1,7 @@
 from langchain_core.messages import AIMessage
 
 from app.agent.graph import route_after_model
+from app.agent.nodes import COMPRESSION_MESSAGE_THRESHOLD
 from app.agent.state import AgentState
 
 
@@ -65,7 +66,10 @@ def test_router_routes_to_compress_when_messages_exceed_threshold():
     state = AgentState(
         session_id="s1",
         model_name="gemma3:4b",
-        messages=[AIMessage(content=f"msg-{index}") for index in range(7)],
+        messages=[
+            AIMessage(content=f"msg-{index}")
+            for index in range(COMPRESSION_MESSAGE_THRESHOLD + 1)
+        ],
     )
 
     result = route_after_model(state)
