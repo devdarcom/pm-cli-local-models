@@ -21,6 +21,20 @@ def list_directory(path: str) -> list[str]:
         return [f"BŁĄD: Brak uprawnień do odczytu: {path}"]
 
 
+def search_in_files(directory: str, phrase: str) -> list[str]:
+    """Zwróć listę nazw plików w katalogu zawierających podaną frazę."""
+    try:
+        return [
+            entry.name
+            for entry in Path(directory).iterdir()
+            if entry.is_file() and phrase in entry.read_text(encoding="utf-8", errors="ignore")
+        ]
+    except FileNotFoundError:
+        return [f"BŁĄD: Katalog nie istnieje: {directory}"]
+    except PermissionError:
+        return [f"BŁĄD: Brak uprawnień do odczytu: {directory}"]
+
+
 def delete_file(path: str) -> str:
     """Usuń plik z systemu plików."""
     try:
