@@ -225,7 +225,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | FX-01 | UNIT | `AGENT_TOOLS` eksponuje wszystkie 5 narzędzi: `read_file`, `list_directory`, `write_file`, `delete_file`, `search_in_files` | done |
 | FX-02 | UNIT | `AgentState.messages` jest typowane `Annotated[list, add_messages]` — reducer LangGraph | done |
 | FX-03 | UNIT | `Session` nie zawiera pola `history` (usunięte jako dead code) | done |
-| FX-04 | UNIT | `call_model` inkrementuje `recursion_count` w zwracanym stanie | todo |
+| FX-04 | UNIT | `call_model` inkrementuje `recursion_count` w zwracanym stanie | done |
 | FX-05 | INT | `load_context_node` wstrzykuje system message tylko gdy `messages` są puste — nie przy każdym `graph.invoke()` | todo |
 | FX-06 | UNIT | `AVAILABLE_MODELS` zawiera modele ze wsparciem tools API (`llama3.2:3b`, `qwen2.5:3b`) zamiast modeli Gemma | todo |
 | FX-07 | UNIT | `call_model` nie tworzy nowego `ChatOllama` przy każdym wywołaniu — model konfigurowany raz | todo |
@@ -271,6 +271,6 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Wieloagentowość | 3 | 1 | 0 | 4 | 0 | 0 |
 | Potwierdzanie akcji | 2 | 3 | 0 | 5 | 0 | 0 |
 | At-Mentions | 8 | 2 | 0 | 10 | 0 | 0 |
-| Poprawki (FX) | 9 | 2 | 0 | 11 | 3 | 0 |
+| Poprawki (FX) | 9 | 2 | 0 | 11 | 4 | 0 |
 | Scenariusze E2E | 0 | 0 | 7 | 7 | 0 | 0 |
-| **Łącznie** | **86** | **25** | **7** | **118** | **42** | **4** |
+| **Łącznie** | **86** | **25** | **7** | **118** | **43** | **4** |
