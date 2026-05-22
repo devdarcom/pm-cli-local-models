@@ -3,7 +3,7 @@ from langchain_core.messages import HumanMessage
 from app.agent.graph import build_graph
 from app.session.manager import create_session
 
-DEFAULT_MODEL = "gemma3:4b"
+DEFAULT_MODEL = "qwen2.5:3b"
 EXIT_COMMAND = "exit"
 
 

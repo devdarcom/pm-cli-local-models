@@ -73,9 +73,18 @@ def load_context_node(state: AgentState) -> dict:
     return {"messages": [system_message] + list(state.messages)}
 
 
+def _order_messages_for_llm(messages: list) -> list:
+    # LLM APIs require system messages to precede user/assistant messages.
+    # add_messages reducer appends new messages by ID, so SystemMessage may
+    # land at a position other than 0 in state — normalize here before the call.
+    system_msgs = [m for m in messages if isinstance(m, SystemMessage)]
+    conversation_msgs = [m for m in messages if not isinstance(m, SystemMessage)]
+    return system_msgs + conversation_msgs
+
+
 def call_model(state: AgentState) -> dict:
     model = ChatOllama(model=state.model_name).bind_tools(AGENT_TOOLS)
-    response = model.invoke(state.messages)
+    response = model.invoke(_order_messages_for_llm(state.messages))
     return {
         "messages": state.messages + [response],
         "recursion_count": state.recursion_count + 1,
