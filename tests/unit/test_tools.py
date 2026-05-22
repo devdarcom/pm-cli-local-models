@@ -41,6 +41,13 @@ def test_read_file_returns_error_on_permission_denied(tmp_path):
     assert str(target) in result
 
 
+def test_delete_file_returns_error_when_file_not_found():
+    result = delete_file("/nonexistent/path/file.txt")
+
+    assert "BŁĄD" in result
+    assert "/nonexistent/path/file.txt" in result
+
+
 def test_delete_file_removes_file_and_returns_status(tmp_path):
     target = tmp_path / "to_delete.txt"
     target.write_text("zawartość")
