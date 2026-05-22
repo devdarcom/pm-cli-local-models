@@ -22,6 +22,13 @@ def test_list_directory_returns_file_list(tmp_path):
     assert "plik_b.py" in result
 
 
+def test_read_file_returns_error_when_file_not_found():
+    result = read_file("/nonexistent/path/file.txt")
+
+    assert "BŁĄD" in result
+    assert "/nonexistent/path/file.txt" in result
+
+
 def test_write_file_creates_file_with_given_content(tmp_path):
     target_file = tmp_path / "output.txt"
 
