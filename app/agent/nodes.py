@@ -1,11 +1,11 @@
 from pathlib import Path
 from typing import Optional
 
-from langchain_core.messages import SystemMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.tools import tool as langchain_tool
 from langchain_ollama import ChatOllama
 
-from app.agent.state import AgentState
+from app.agent.state import AgentState, RECURSION_LIMIT
 from app.agent.tools import delete_file, list_directory, read_file, search_in_files, write_file
 
 AGENT_TOOLS = [
@@ -20,6 +20,7 @@ PROJECT_CONTEXT_FILENAME = "PROJECT.md"
 AGENTS_MD_FILENAME = "AGENTS.md"
 SYSTEM_PROMPT_FILENAME = "system_prompt.md"
 CONTEXT_SEPARATOR = "\n\n"
+MAX_MODEL_RETRIES = 3
 
 
 def load_project_context(project_dir: Path = Path(".")) -> Optional[str]:
@@ -82,11 +83,71 @@ def _order_messages_for_llm(messages: list) -> list:
 
 
 def call_model(state: AgentState) -> dict:
+    if state.recursion_count >= RECURSION_LIMIT:
+        return {
+            "error_type": "recursion_limit",
+            "error_node": "call_model",
+            "last_error": (
+                f"Osiągnięto limit kroków agenta ({RECURSION_LIMIT}). "
+                "Zatrzymuję dalsze wywołania modelu."
+            ),
+        }
+
     model = ChatOllama(model=state.model_name).bind_tools(AGENT_TOOLS)
-    response = model.invoke(_order_messages_for_llm(state.messages))
+    try:
+        response = model.invoke(_order_messages_for_llm(state.messages))
+    except Exception as e:
+        return {
+            "error_type": "model_error",
+            "error_node": "call_model",
+            "last_error": str(e),
+        }
+
     return {
-        "messages": state.messages + [response],
+        "messages": [response],
         "recursion_count": state.recursion_count + 1,
+        "retry_count": 0,
+        "last_error": None,
+        "error_node": None,
+        "error_type": None,
+    }
+
+
+def error_handler_node(state: AgentState) -> dict:
+    next_retry_count = state.retry_count + 1
+    error_feedback = HumanMessage(
+        content=(
+            f"[FEEDBACK BŁĘDU — próba {next_retry_count}/{MAX_MODEL_RETRIES}]\n"
+            f"{state.last_error or 'Nieznany błąd'}\n\n"
+            "Spróbuj innego podejścia i zwróć poprawny wynik."
+        )
+    )
+    return {
+        "messages": [error_feedback],
+        "retry_count": next_retry_count,
+        "error_type": None,
+        "error_node": None,
+    }
+
+
+def escalate_to_user_node(state: AgentState) -> dict:
+    if state.error_type == "recursion_limit":
+        message = (
+            f"⚠️ Osiągnięto limit kroków agenta ({RECURSION_LIMIT}). "
+            "Przerywam bieżące zadanie, aby uniknąć zapętlenia."
+        )
+    else:
+        message = (
+            f"⚠️ Nie udało się wykonać zadania po {MAX_MODEL_RETRIES} próbach.\n"
+            f"Ostatni błąd: {state.last_error or 'nieznany'}"
+        )
+
+    return {
+        "messages": [AIMessage(content=message)],
+        "retry_count": 0,
+        "last_error": None,
+        "error_node": None,
+        "error_type": None,
     }
 
 
