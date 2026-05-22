@@ -6,11 +6,14 @@ from langchain_core.tools import tool as langchain_tool
 from langchain_ollama import ChatOllama
 
 from app.agent.state import AgentState
-from app.agent.tools import list_directory, read_file
+from app.agent.tools import delete_file, list_directory, read_file, search_in_files, write_file
 
 AGENT_TOOLS = [
     langchain_tool(read_file),
     langchain_tool(list_directory),
+    langchain_tool(write_file),
+    langchain_tool(delete_file),
+    langchain_tool(search_in_files),
 ]
 
 PROJECT_CONTEXT_FILENAME = "PROJECT.md"
