@@ -21,7 +21,7 @@ AGENTS_MD_FILENAME = "AGENTS.md"
 SYSTEM_PROMPT_FILENAME = "system_prompt.md"
 CONTEXT_SEPARATOR = "\n\n"
 MAX_MODEL_RETRIES = 3
-COMPRESSED_CONTEXT_PREFIX = "[Skompresowany kontekst]:"
+COMPRESSED_CONTEXT_PREFIX = "[Skompresowany kontekst]"
 _BOUND_MODEL_CACHE: dict[str, Any] = {}
 
 
