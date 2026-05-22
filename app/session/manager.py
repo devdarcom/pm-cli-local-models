@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 import uuid
 
-AVAILABLE_MODELS = {"gemma3:4b", "gemma:7b", "gemma:2b", "gemma:security"}
+AVAILABLE_MODELS = {"llama3.2:3b", "qwen2.5:3b"}
 
 
 @dataclass
