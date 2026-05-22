@@ -51,7 +51,14 @@ def load_agents_md(agents_dir: Path = Path(".")) -> Optional[str]:
         raise RuntimeError(f"Brak uprawnień do odczytu {agents_md}") from e
 
 
+def _has_system_message(messages: list) -> bool:
+    return any(isinstance(m, SystemMessage) for m in messages)
+
+
 def load_context_node(state: AgentState) -> dict:
+    if _has_system_message(state.messages):
+        return {}
+
     project_dir = Path(".")
     system_prompt = load_system_prompt(project_dir / SYSTEM_PROMPT_FILENAME)
     project_context = load_project_context(project_dir)
