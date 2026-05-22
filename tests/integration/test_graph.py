@@ -3,6 +3,8 @@ from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, Tool
 
 import app.agent.graph as graph_module
 from app.agent.graph import build_graph
+from app.agent.nodes import compress_node
+from app.agent.state import AgentState
 from tests.integration.conftest import SYSTEM_PROMPT_MOCK
 
 
@@ -131,3 +133,20 @@ def test_graph_escalates_after_exhausted_retries(mock_ollama_and_context):
 
     assert mock_ollama_and_context.return_value.invoke.call_count == 4
     assert "Nie udało się wykonać zadania po 3 próbach" in result["messages"][-1].content
+
+
+def test_compress_node_uses_dedicated_compression_model():
+    state = AgentState(
+        session_id="test-session",
+        model_name="llama3.2:3b",
+        messages=[HumanMessage(content="Bardzo długi kontekst do kompresji.")],
+    )
+
+    with patch("app.agent.nodes.ChatOllama") as mock_chat:
+        mock_chat.return_value.invoke.return_value = AIMessage(content="Skrót kontekstu")
+
+        result = compress_node(state)
+
+    mock_chat.assert_called_once_with(model="gemma3:4b")
+    assert mock_chat.return_value.invoke.call_count == 1
+    assert result["summary"] == "Skrót kontekstu"
