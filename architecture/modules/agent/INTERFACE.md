@@ -14,7 +14,12 @@
 
 - Unknown state fields are forbidden.
 - Model errors route through retry/escalation path.
+- Retry policy is bounded by `MAX_MODEL_RETRIES`.
+- Recursion policy is bounded by `RECURSION_LIMIT`.
 - Compression branch must re-enter main model path before completion.
+- Compression routing threshold is explicit and controlled by
+  `COMPRESSION_MESSAGE_THRESHOLD`.
+- Prompt boundary keeps `AGENTS.md` out of runtime model context.
 
 ## Change Rules
 
@@ -23,3 +28,5 @@
   - update to conditional edges mapping,
   - unit test for router branch.
 - Any change in state fields requires matching tests in state/router/node layers.
+- Any change to retry/recursion/compression policy must update related ADRs and
+  routing tests.

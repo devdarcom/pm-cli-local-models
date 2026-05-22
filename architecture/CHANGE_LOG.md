@@ -8,6 +8,8 @@
 - Aligned router compression symbol output to `compress` (`G-09`).
 - Hardened file read candidate lookup to ignore non-project directories like
   `.venv` for unique filename resolution (`T-12`).
+- Added ADR baseline for recovery/model/prompt/queue/compression/skill
+  orchestration (`ADR-004` to `ADR-009`).
 
 ## Notes
 

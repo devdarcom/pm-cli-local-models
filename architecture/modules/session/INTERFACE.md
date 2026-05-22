@@ -13,6 +13,8 @@
 
 - Session model must be from allowed models list.
 - Session ID uniqueness is required for agent/session separation.
+- Session model policy must keep tool-calling compatibility.
+- Compression model selection is independent from session model selection.
 
 ## Change Rules
 
@@ -21,3 +23,4 @@
   - reset,
   - invalid model path,
   - unique session ID path.
+- Any change to model allowlist policy should be reflected in architecture ADRs.

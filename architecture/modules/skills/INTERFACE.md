@@ -13,6 +13,9 @@
 
 - Missing skill file is handled explicitly (`None` or structured error).
 - Skill-level model override must not silently break base session behavior.
+- Parent orchestration skill may delegate specialized analysis through a spawned
+  subagent.
+- Architecture alignment in code-spec flow is a hard pre-coding gate.
 
 ## Change Rules
 
@@ -20,3 +23,5 @@
   - explicit model in skill,
   - default model fallback,
   - missing skill file path.
+- Any change in skill orchestration chain (parent vs subagent responsibility)
+  requires updating skill docs and architecture decision records.
