@@ -62,6 +62,8 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | T-09 | UNIT | `delete_file()` zwraca error dict gdy plik nie istnieje | done |
 | T-10 | UNIT | `search_in_files()` zwraca listę plików zawierających frazę | done |
 | T-11 | UNIT | `search_in_files()` zwraca pustą listę gdy fraza nie znaleziona | done |
+| T-12 | UNIT | `read_file()` rozpoznaje unikalną nazwę pliku rekurencyjnie w projekcie (np. `manager.py`) | todo |
+| T-13 | UNIT | `read_file()` zwraca błąd z kandydatami gdy nazwa pliku jest niejednoznaczna | todo |
 
 ---
 
@@ -74,7 +76,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | G-03 | INT | Graf kończy się gdy model nie zwróci `tool_call` (brak dalszych kroków w grafie) | done |
 | G-04 | INT | Graf wywołuje `tool_node` gdy model zwróci `tool_call` | done |
 | G-05 | INT | Graf wraca do `call_model` po wykonaniu narzędzia | done |
-| G-06 | INT | Graf zatrzymuje się po `recursion_limit` krokach | todo |
+| G-06 | INT | Graf zatrzymuje się po `recursion_limit` krokach | done |
 | G-07 | UNIT | Router zwraca `"tool_node"` gdy response zawiera `tool_call` | done |
 | G-08 | UNIT | Router zwraca `"done"` gdy response nie zawiera `tool_call` | done |
 | G-09 | UNIT | Router zwraca `"compress"` gdy liczba wiadomości > `COMPRESSION_THRESHOLD` | todo |
@@ -94,16 +96,18 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 
 ---
 
-## Obsługa błędów (`app/agent/nodes.py`)
+## Obsługa błędów (`app/agent/nodes.py`, `graph.py`)
+
+> Routing retry/escalate przez conditional edges grafu (nie LangGraph `Command`).
 
 | ID | Typ | Opis | Status |
 |---|---|---|---|
-| E-01 | UNIT | `error_handler` inkrementuje `retry_count` i ustawia `last_error`, `error_node`, `error_type` w stanie | todo |
-| E-02 | UNIT | `error_handler` zwraca `Command` z przejściem do retry gdy `retry_count` < 3 | todo |
-| E-03 | UNIT | `error_handler` zwraca `Command` z przejściem do escalate gdy `retry_count` >= 3 | todo |
-| E-04 | INT | Agent ponawia wywołanie modelu po błędnym output (max 3 razy) | todo |
-| E-05 | INT | Agent zwraca błąd do użytkownika po 3 nieudanych próbach | todo |
-| E-06 | INT | Narzędzia zwracają error string zamiast rzucać wyjątek | todo |
+| E-01 | UNIT | `error_handler` inkrementuje `retry_count` i dodaje feedback błędu do `messages` | done |
+| E-02 | UNIT | Router kieruje do `error_handler` → `call_model` gdy `retry_count` < 3 | done |
+| E-03 | UNIT | Router kieruje do `escalate_to_user` gdy `retry_count` >= 3 | done |
+| E-04 | INT | Agent ponawia wywołanie modelu po błędnym output (max 3 razy) | done |
+| E-05 | INT | Agent zwraca błąd do użytkownika po 3 nieudanych próbach | done |
+| E-06 | INT | Narzędzia zwracają error dict zamiast rzucać wyjątek | done |
 
 ---
 
@@ -127,7 +131,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | B-01 | UNIT | `parse_command("\new")` zwraca `Command.NEW` | todo |
 | B-02 | UNIT | `parse_command("\reset")` zwraca `Command.RESET` | todo |
 | B-03 | UNIT | `parse_command("\compress")` zwraca `Command.COMPRESS` | todo |
-| B-04 | UNIT | `parse_command("\model gemma:7b")` zwraca `Command.MODEL` z arg `"gemma:7b"` | todo |
+| B-04 | UNIT | `parse_command("\model llama3.2:3b")` zwraca `Command.MODEL` z arg `"llama3.2:3b"` | todo |
 | B-05 | UNIT | `parse_command("\spawn")` zwraca `Command.SPAWN` | todo |
 | B-06 | UNIT | `parse_command("\mcp http://...")` zwraca `Command.MCP` z arg url | todo |
 | B-07 | UNIT | `parse_command("\skills")` zwraca `Command.SKILLS` | todo |
@@ -144,7 +148,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 |---|---|---|---|
 | M-01 | UNIT | `set_model()` aktualizuje model w sesji gdy model jest na liście dostępnych | todo |
 | M-02 | UNIT | `set_model()` zwraca błąd gdy model nie jest dostępny | todo |
-| M-03 | INT | `available_models()` zwraca listę z Ollamy (mock: `["gemma3:4b", "gemma:7b"]`) | todo |
+| M-03 | INT | `available_models()` zwraca listę z Ollamy (mock: `["llama3.2:3b", "qwen2.5:3b"]`) | todo |
 
 ---
 
@@ -229,10 +233,10 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | FX-05 | INT | `load_context_node` wstrzykuje system message tylko gdy `messages` są puste — nie przy każdym `graph.invoke()` | done |
 | FX-06 | UNIT | `AVAILABLE_MODELS` zawiera modele ze wsparciem tools API (`llama3.2:3b`, `qwen2.5:3b`) zamiast modeli Gemma | done |
 | FX-07 | UNIT | `call_model` nie tworzy nowego `ChatOllama` przy każdym wywołaniu — model konfigurowany raz | todo |
-| FX-08 | UNIT | `search_in_files` pomija pliki większe niż `MAX_SEARCH_FILE_SIZE` | todo |
-| FX-09 | UNIT | `search_in_files` przeszukuje rekurencyjnie podkatalogi (`rglob` zamiast `iterdir`) | todo |
-| FX-10 | UNIT | `AgentState` odrzuca nieznane pola przy inicjalizacji (`extra="forbid"`) — test walidacji | todo |
-| FX-11 | INT | `graph.invoke()` akumuluje historię konwersacji między turn'ami — agent pamięta poprzednie wiadomości | todo |
+| FX-08 | UNIT | `search_in_files` pomija pliki większe niż `MAX_SEARCH_FILE_SIZE` | done |
+| FX-09 | UNIT | `search_in_files` przeszukuje rekurencyjnie podkatalogi (`rglob` zamiast `iterdir`) | done |
+| FX-10 | UNIT | `AgentState` odrzuca nieznane pola przy inicjalizacji (`extra="forbid"`) — test walidacji | done |
+| FX-11 | UNIT | CLI akumuluje historię konwersacji między turn'ami — agent pamięta poprzednie wiadomości | done |
 
 ---
 
@@ -259,10 +263,10 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Session | 4 | 0 | 0 | 4 | 4 | 0 |
 | Context Loader | 13 | 0 | 0 | 13 | 13 | 0 |
 | AgentState | 4 | 0 | 0 | 4 | 4 | 0 |
-| Narzędzia plików | 11 | 0 | 0 | 11 | 11 | 0 |
-| Graf agenta | 3 | 6 | 0 | 9 | 7 | 0 |
+| Narzędzia plików | 13 | 0 | 0 | 13 | 11 | 0 |
+| Graf agenta | 3 | 6 | 0 | 9 | 8 | 0 |
 | Kolejka | 3 | 1 | 0 | 4 | 0 | 4 |
-| Obsługa błędów | 3 | 3 | 0 | 6 | 0 | 0 |
+| Obsługa błędów | 3 | 3 | 0 | 6 | 6 | 0 |
 | Kompresja | 3 | 3 | 0 | 6 | 0 | 0 |
 | Backslash Commands | 11 | 0 | 0 | 11 | 0 | 0 |
 | Zmiana modelu | 2 | 1 | 0 | 3 | 0 | 0 |
@@ -271,6 +275,6 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Wieloagentowość | 3 | 1 | 0 | 4 | 0 | 0 |
 | Potwierdzanie akcji | 2 | 3 | 0 | 5 | 0 | 0 |
 | At-Mentions | 8 | 2 | 0 | 10 | 0 | 0 |
-| Poprawki (FX) | 9 | 2 | 0 | 11 | 6 | 0 |
+| Poprawki (FX) | 10 | 1 | 0 | 11 | 10 | 0 |
 | Scenariusze E2E | 0 | 0 | 7 | 7 | 0 | 0 |
-| **Łącznie** | **86** | **25** | **7** | **118** | **45** | **4** |
+| **Łącznie** | **89** | **24** | **7** | **120** | **56** | **4** |

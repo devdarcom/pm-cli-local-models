@@ -12,11 +12,35 @@ def _error_result(message: str, data: Any = None) -> dict[str, Any]:
     return {"ok": False, "data": data, "error": message}
 
 
+def _resolve_filename_candidates(filename: str) -> list[Path]:
+    return sorted(path for path in Path(".").rglob(filename) if path.is_file())
+
+
 def read_file(path: str) -> dict[str, Any]:
     """Odczytaj zawartość pliku tekstowego."""
+    target_path = Path(path)
     try:
-        return _success_result(Path(path).read_text(encoding="utf-8"))
+        return _success_result(target_path.read_text(encoding="utf-8"))
     except FileNotFoundError:
+        # If user provided only a filename, try resolving it in project tree.
+        if target_path.name == path:
+            candidates = _resolve_filename_candidates(path)
+            if len(candidates) == 1:
+                resolved_path = candidates[0]
+                try:
+                    return _success_result(resolved_path.read_text(encoding="utf-8"))
+                except PermissionError:
+                    return _error_result(f"BŁĄD: Brak uprawnień do odczytu: {resolved_path}")
+            if len(candidates) > 1:
+                candidate_paths = [str(candidate) for candidate in candidates[:5]]
+                return _error_result(
+                    (
+                        f"BŁĄD: Znaleziono wiele plików o nazwie: {path}. "
+                        "Podaj dokładną ścieżkę."
+                    ),
+                    {"candidates": candidate_paths},
+                )
+
         return _error_result(f"BŁĄD: Plik nie istnieje: {path}")
     except PermissionError:
         return _error_result(f"BŁĄD: Brak uprawnień do odczytu: {path}")

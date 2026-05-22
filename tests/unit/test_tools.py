@@ -41,6 +41,35 @@ def test_read_file_returns_error_when_file_not_found():
     assert "/nonexistent/path/file.txt" in result["error"]
 
 
+def test_read_file_resolves_unique_filename_in_project_tree(tmp_path, monkeypatch):
+    nested = tmp_path / "app" / "session"
+    nested.mkdir(parents=True)
+    manager = nested / "manager.py"
+    manager.write_text("print('ok')")
+    monkeypatch.chdir(tmp_path)
+
+    result = read_file("manager.py")
+
+    assert result["ok"] is True
+    assert "print('ok')" in result["data"]
+
+
+def test_read_file_returns_disambiguation_when_filename_not_unique(tmp_path, monkeypatch):
+    first_dir = tmp_path / "app" / "session"
+    second_dir = tmp_path / "tests"
+    first_dir.mkdir(parents=True)
+    second_dir.mkdir(parents=True)
+    (first_dir / "manager.py").write_text("first")
+    (second_dir / "manager.py").write_text("second")
+    monkeypatch.chdir(tmp_path)
+
+    result = read_file("manager.py")
+
+    assert result["ok"] is False
+    assert "wiele plików" in result["error"]
+    assert len(result["data"]["candidates"]) == 2
+
+
 def test_read_file_returns_error_on_permission_denied(tmp_path):
     target = tmp_path / "secret.txt"
     target.write_text("sekret")
