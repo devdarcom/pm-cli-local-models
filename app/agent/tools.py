@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Any
 
 MAX_SEARCH_FILE_SIZE = 1_000_000
+FILENAME_SEARCH_EXCLUDED_DIRS = {".venv", ".git", "__pycache__"}
 
 
 def _success_result(data: Any) -> dict[str, Any]:
@@ -13,7 +14,14 @@ def _error_result(message: str, data: Any = None) -> dict[str, Any]:
 
 
 def _resolve_filename_candidates(filename: str) -> list[Path]:
-    return sorted(path for path in Path(".").rglob(filename) if path.is_file())
+    candidates: list[Path] = []
+    for path in Path(".").rglob(filename):
+        if not path.is_file():
+            continue
+        if any(directory in FILENAME_SEARCH_EXCLUDED_DIRS for directory in path.parts):
+            continue
+        candidates.append(path)
+    return sorted(candidates)
 
 
 def read_file(path: str) -> dict[str, Any]:
