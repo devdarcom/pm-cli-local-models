@@ -53,7 +53,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 |---|---|---|---|
 | T-01 | UNIT | `read_file()` zwraca treść pliku gdy istnieje | done |
 | T-02 | UNIT | `read_file()` zwraca error dict gdy plik nie istnieje | done |
-| T-03 | UNIT | `read_file()` zwraca error dict gdy brak uprawnień | todo |
+| T-03 | UNIT | `read_file()` zwraca error dict gdy brak uprawnień | done |
 | T-04 | UNIT | `write_file()` tworzy plik z podaną treścią | done |
 | T-05 | UNIT | `write_file()` zwraca error dict gdy katalog nie istnieje | todo |
 | T-06 | UNIT | `list_directory()` zwraca listę plików w katalogu | done |
