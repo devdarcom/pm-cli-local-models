@@ -21,6 +21,7 @@ AGENTS_MD_FILENAME = "AGENTS.md"
 SYSTEM_PROMPT_FILENAME = "system_prompt.md"
 CONTEXT_SEPARATOR = "\n\n"
 MAX_MODEL_RETRIES = 3
+COMPRESSED_CONTEXT_PREFIX = "[Skompresowany kontekst]:"
 _BOUND_MODEL_CACHE: dict[str, Any] = {}
 
 
@@ -169,3 +170,15 @@ def build_prompt(
     if project_context:
         content += CONTEXT_SEPARATOR + project_context
     return [{"role": "system", "content": content}]
+
+
+def compress_history(messages: list[dict[str, str]], summary: str) -> list[dict[str, str]]:
+    if not messages:
+        return []
+
+    system_message = messages[0]
+    summary_message = {
+        "role": "assistant",
+        "content": f"{COMPRESSED_CONTEXT_PREFIX} {summary}",
+    }
+    return [system_message, summary_message]
