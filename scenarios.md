@@ -139,6 +139,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | B-09 | UNIT | `parse_command("\help")` zwraca `Command.HELP` | todo |
 | B-10 | UNIT | `parse_command("zwykły tekst")` zwraca `None` (nie jest komendą) | todo |
 | B-11 | UNIT | `parse_command("\model")` bez arg zwraca błąd brakującego argumentu | todo |
+| BL-01 | UNIT | Po `parse_command("\new")` chat loop tworzy nową sesję i czyści historię konwersacji | todo |
 
 ---
 
@@ -268,7 +269,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Kolejka | 3 | 1 | 0 | 4 | 0 | 4 |
 | Obsługa błędów | 3 | 3 | 0 | 6 | 6 | 0 |
 | Kompresja | 3 | 3 | 0 | 6 | 6 | 0 |
-| Backslash Commands | 11 | 0 | 0 | 11 | 1 | 0 |
+| Backslash Commands | 12 | 0 | 0 | 12 | 1 | 0 |
 | Zmiana modelu | 2 | 1 | 0 | 3 | 0 | 0 |
 | Skille | 5 | 1 | 0 | 6 | 0 | 0 |
 | MCP | 2 | 2 | 0 | 4 | 0 | 0 |
@@ -277,4 +278,4 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | At-Mentions | 8 | 2 | 0 | 10 | 0 | 0 |
 | Poprawki (FX) | 10 | 1 | 0 | 11 | 11 | 0 |
 | Scenariusze E2E | 0 | 0 | 7 | 7 | 0 | 0 |
-| **Łącznie** | **89** | **24** | **7** | **120** | **67** | **4** |
+| **Łącznie** | **90** | **24** | **7** | **121** | **67** | **4** |
