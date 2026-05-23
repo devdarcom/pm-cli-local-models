@@ -2,6 +2,7 @@ from langchain_core.messages import BaseMessage, HumanMessage
 
 from app.agent.graph import build_graph
 from app.session.manager import create_session
+from app.tui.commands import Command, parse_command
 
 DEFAULT_MODEL = "llama3.2:3b"
 EXIT_COMMAND = "exit"
@@ -19,6 +20,12 @@ def run_chat_loop(graph, session) -> None:
             break
 
         if not user_input:
+            continue
+
+        parsed_command = parse_command(user_input)
+        if parsed_command == Command.NEW:
+            session = create_session(model=session.model)
+            conversation_messages = []
             continue
 
         turn_messages = conversation_messages + [HumanMessage(content=user_input)]
