@@ -27,6 +27,9 @@ def run_chat_loop(graph, session) -> None:
             session = create_session(model=session.model)
             conversation_messages = []
             continue
+        if parsed_command == Command.RESET:
+            conversation_messages = []
+            continue
 
         turn_messages = conversation_messages + [HumanMessage(content=user_input)]
         result = graph.invoke({
