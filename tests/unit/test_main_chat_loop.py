@@ -62,3 +62,35 @@ def test_run_chat_loop_starts_new_session_and_clears_history_for_new_command(mon
 
     assert session_ids == ["s1", "s2"]
     assert message_lengths == [1, 1]
+
+
+def test_run_chat_loop_resets_history_without_changing_session_for_reset_command(
+    monkeypatch,
+):
+    user_inputs = iter(["pierwsza", "\\reset", "druga", "exit"])
+    monkeypatch.setattr("builtins.input", lambda _: next(user_inputs))
+
+    session_ids: list[str] = []
+    model_names: list[str] = []
+    message_lengths: list[int] = []
+
+    class ResetTrackingGraph:
+        def invoke(self, payload: dict) -> dict:
+            session_ids.append(payload["session_id"])
+            model_names.append(payload["model_name"])
+            message_lengths.append(len(payload["messages"]))
+            return {"messages": payload["messages"] + [AIMessage(content="OK")]}
+
+    monkeypatch.setattr(
+        main_module,
+        "create_session",
+        lambda model: (_ for _ in ()).throw(AssertionError("create_session should not be called")),
+    )
+
+    session = SimpleNamespace(model="llama3.2:3b", session_id="s1")
+
+    run_chat_loop(ResetTrackingGraph(), session)
+
+    assert session_ids == ["s1", "s1"]
+    assert model_names == ["llama3.2:3b", "llama3.2:3b"]
+    assert message_lengths == [1, 1]
