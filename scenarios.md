@@ -129,7 +129,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | ID | Typ | Opis | Status |
 |---|---|---|---|
 | B-01 | UNIT | `parse_command("\new")` zwraca `Command.NEW` | done |
-| B-02 | UNIT | `parse_command("\reset")` zwraca `Command.RESET` | todo |
+| B-02 | UNIT | `parse_command("\reset")` zwraca `Command.RESET` | done |
 | B-03 | UNIT | `parse_command("\compress")` zwraca `Command.COMPRESS` | todo |
 | B-04 | UNIT | `parse_command("\model llama3.2:3b")` zwraca `Command.MODEL` z arg `"llama3.2:3b"` | todo |
 | B-05 | UNIT | `parse_command("\spawn")` zwraca `Command.SPAWN` | todo |
@@ -140,6 +140,16 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | B-10 | UNIT | `parse_command("zwykły tekst")` zwraca `None` (nie jest komendą) | todo |
 | B-11 | UNIT | `parse_command("\model")` bez arg zwraca błąd brakującego argumentu | todo |
 | BL-01 | UNIT | Po `parse_command("\new")` chat loop tworzy nową sesję i czyści historię konwersacji | done |
+| BL-02 | UNIT | Po `parse_command("\reset")` chat loop czyści historię obecnej sesji, zachowując model i `session_id` | todo |
+| BL-03 | UNIT | Po `parse_command("\compress")` chat loop uruchamia ścieżkę kompresji kontekstu aktywnej sesji | todo |
+| BL-04 | UNIT | Po `parse_command("\model llama3.2:3b")` chat loop aktualizuje model aktywnej sesji | todo |
+| BL-05 | UNIT | Po `parse_command("\spawn")` chat loop uruchamia flow tworzenia sub-agenta | todo |
+| BL-06 | UNIT | Po `parse_command("\mcp <url>")` chat loop inicjuje podpięcie MCP do aktywnego agenta | todo |
+| BL-07 | UNIT | Po `parse_command("\skills")` chat loop zwraca listę dostępnych skillów | todo |
+| BL-08 | UNIT | Po `parse_command("\stop")` chat loop kończy działanie aktywnej sesji | todo |
+| BL-09 | UNIT | Po `parse_command("\help")` chat loop zwraca listę dostępnych komend | todo |
+| BL-10 | UNIT | Dla zwykłego tekstu (`parse_command(...) == None`) chat loop wykonuje standardowe wywołanie modelu | todo |
+| BL-11 | UNIT | Po błędzie parsera `\model` bez argumentu chat loop zwraca czytelny komunikat i nie zmienia stanu sesji | todo |
 
 ---
 
@@ -269,7 +279,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Kolejka | 3 | 1 | 0 | 4 | 0 | 4 |
 | Obsługa błędów | 3 | 3 | 0 | 6 | 6 | 0 |
 | Kompresja | 3 | 3 | 0 | 6 | 6 | 0 |
-| Backslash Commands | 12 | 0 | 0 | 12 | 2 | 0 |
+| Backslash Commands | 22 | 0 | 0 | 22 | 3 | 0 |
 | Zmiana modelu | 2 | 1 | 0 | 3 | 0 | 0 |
 | Skille | 5 | 1 | 0 | 6 | 0 | 0 |
 | MCP | 2 | 2 | 0 | 4 | 0 | 0 |
@@ -278,4 +288,4 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | At-Mentions | 8 | 2 | 0 | 10 | 0 | 0 |
 | Poprawki (FX) | 10 | 1 | 0 | 11 | 11 | 0 |
 | Scenariusze E2E | 0 | 0 | 7 | 7 | 0 | 0 |
-| **Łącznie** | **90** | **24** | **7** | **121** | **68** | **4** |
+| **Łącznie** | **100** | **24** | **7** | **131** | **69** | **4** |
