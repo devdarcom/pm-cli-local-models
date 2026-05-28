@@ -41,3 +41,9 @@ def test_parse_command_returns_skills_for_skills_command():
     result = parse_command("\\skills")
 
     assert result == ParsedCommand(command=Command.SKILLS)
+
+
+def test_parse_command_returns_stop_for_stop_command():
+    result = parse_command("\\stop")
+
+    assert result == ParsedCommand(command=Command.STOP)

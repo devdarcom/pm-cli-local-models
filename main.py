@@ -11,6 +11,7 @@ from app.tui.commands import Command, parse_command
 
 DEFAULT_MODEL = "llama3.2:3b"
 EXIT_COMMAND = "exit"
+STOP_SESSION_MESSAGE = "Sesja zakończona."
 
 
 def run_chat_loop(graph, session) -> None:
@@ -56,6 +57,9 @@ def run_chat_loop(graph, session) -> None:
                 available_skills = list_skills()
                 print("\n".join(available_skills))
                 print()
+            elif parsed_command.command == Command.STOP:
+                print(STOP_SESSION_MESSAGE)
+                break
             continue
 
         turn_messages = conversation_messages + [HumanMessage(content=user_input)]
