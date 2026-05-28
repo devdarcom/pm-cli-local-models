@@ -157,3 +157,23 @@ def test_run_chat_loop_updates_session_model_for_model_command(monkeypatch):
     assert session_ids == ["s1", "s1"]
     assert model_names == ["qwen2.5:3b", "llama3.2:3b"]
     assert message_lengths == [1, 3]
+
+
+def test_run_chat_loop_starts_spawn_flow_for_spawn_command(monkeypatch):
+    user_inputs = iter(["\\spawn", "exit"])
+    monkeypatch.setattr("builtins.input", lambda _: next(user_inputs))
+
+    spawn_calls: list[str] = []
+
+    def fake_start_spawn_flow(session):
+        spawn_calls.append(session.session_id)
+
+    monkeypatch.setattr(main_module, "start_spawn_flow", fake_start_spawn_flow)
+
+    graph = FakeGraph()
+    session = SimpleNamespace(model="llama3.2:3b", session_id="s1")
+
+    run_chat_loop(graph, session)
+
+    assert spawn_calls == ["s1"]
+    assert len(graph.calls) == 0

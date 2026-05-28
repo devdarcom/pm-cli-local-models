@@ -23,3 +23,9 @@ def test_parse_command_returns_model_with_argument_for_model_command():
     result = parse_command("\\model llama3.2:3b")
 
     assert result == ParsedCommand(command=Command.MODEL, arg="llama3.2:3b")
+
+
+def test_parse_command_returns_spawn_for_spawn_command():
+    result = parse_command("\\spawn")
+
+    assert result == ParsedCommand(command=Command.SPAWN)
