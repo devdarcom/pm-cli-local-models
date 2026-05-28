@@ -10,10 +10,19 @@ class Session:
     session_id: str = field(default_factory=lambda: str(uuid.uuid4()))
 
 
-def create_session(model: str) -> Session:
+def _validate_model(model: str) -> None:
     if model not in AVAILABLE_MODELS:
         raise ValueError(f"nieznany model: '{model}'. Dostępne: {sorted(AVAILABLE_MODELS)}")
+
+
+def create_session(model: str) -> Session:
+    _validate_model(model)
     return Session(model=model)
+
+
+def set_model(session: Session, model: str) -> None:
+    _validate_model(model)
+    session.model = model
 
 
 def reset_session(session: Session) -> None:
