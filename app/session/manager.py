@@ -16,6 +16,12 @@ def create_session(model: str) -> Session:
     return Session(model=model)
 
 
+def set_model(session: Session, model: str) -> None:
+    if model not in AVAILABLE_MODELS:
+        raise ValueError(f"nieznany model: '{model}'. Dostępne: {sorted(AVAILABLE_MODELS)}")
+    session.model = model
+
+
 def reset_session(session: Session) -> None:
     # Historia konwersacji przechowywana jest w AgentState.messages (LangGraph),
     # nie w Session — reset sesji nie wymaga już czyszczenia lokalnej listy.

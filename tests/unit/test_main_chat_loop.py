@@ -132,3 +132,28 @@ def test_run_chat_loop_runs_compression_for_compress_command(monkeypatch):
     assert session_ids_in_compress == ["s1"]
     assert model_names_in_compress == ["llama3.2:3b"]
     assert graph_invoke_count == 3
+
+
+def test_run_chat_loop_updates_session_model_for_model_command(monkeypatch):
+    user_inputs = iter(["pierwsza", "\\model llama3.2:3b", "druga", "exit"])
+    monkeypatch.setattr("builtins.input", lambda _: next(user_inputs))
+
+    session_ids: list[str] = []
+    model_names: list[str] = []
+    message_lengths: list[int] = []
+
+    class ModelTrackingGraph:
+        def invoke(self, payload: dict) -> dict:
+            session_ids.append(payload["session_id"])
+            model_names.append(payload["model_name"])
+            message_lengths.append(len(payload["messages"]))
+            return {"messages": payload["messages"] + [AIMessage(content="OK")]}
+
+    session = SimpleNamespace(model="qwen2.5:3b", session_id="s1")
+
+    run_chat_loop(ModelTrackingGraph(), session)
+
+    assert session.model == "llama3.2:3b"
+    assert session_ids == ["s1", "s1"]
+    assert model_names == ["qwen2.5:3b", "llama3.2:3b"]
+    assert message_lengths == [1, 3]

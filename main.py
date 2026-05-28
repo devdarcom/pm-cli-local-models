@@ -3,7 +3,7 @@ from langchain_core.messages import BaseMessage, HumanMessage
 from app.agent.graph import build_graph
 from app.agent.nodes import compress_node
 from app.agent.state import AgentState
-from app.session.manager import create_session
+from app.session.manager import create_session, set_model
 from app.tui.commands import Command, parse_command
 
 DEFAULT_MODEL = "llama3.2:3b"
@@ -25,22 +25,23 @@ def run_chat_loop(graph, session) -> None:
             continue
 
         parsed_command = parse_command(user_input)
-        if parsed_command == Command.NEW:
-            session = create_session(model=session.model)
-            conversation_messages = []
-            continue
-        if parsed_command == Command.RESET:
-            conversation_messages = []
-            continue
-        if parsed_command == Command.COMPRESS:
-            if conversation_messages:
-                compression_state = AgentState(
-                    session_id=session.session_id,
-                    model_name=session.model,
-                    messages=conversation_messages,
-                )
-                compression_result = compress_node(compression_state)
-                conversation_messages = list(compression_result["messages"])
+        if parsed_command is not None:
+            if parsed_command.command == Command.NEW:
+                session = create_session(model=session.model)
+                conversation_messages = []
+            elif parsed_command.command == Command.RESET:
+                conversation_messages = []
+            elif parsed_command.command == Command.COMPRESS:
+                if conversation_messages:
+                    compression_state = AgentState(
+                        session_id=session.session_id,
+                        model_name=session.model,
+                        messages=conversation_messages,
+                    )
+                    compression_result = compress_node(compression_state)
+                    conversation_messages = list(compression_result["messages"])
+            elif parsed_command.command == Command.MODEL:
+                set_model(session, parsed_command.arg)
             continue
 
         turn_messages = conversation_messages + [HumanMessage(content=user_input)]
