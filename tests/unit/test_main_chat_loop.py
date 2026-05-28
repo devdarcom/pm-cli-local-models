@@ -197,3 +197,17 @@ def test_run_chat_loop_connects_mcp_for_mcp_command(monkeypatch):
 
     assert mcp_calls == [("s1", "http://localhost:8080")]
     assert len(graph.calls) == 0
+
+
+def test_run_chat_loop_prints_available_skills_for_skills_command(monkeypatch, capsys):
+    user_inputs = iter(["\\skills", "exit"])
+    monkeypatch.setattr("builtins.input", lambda _: next(user_inputs))
+    monkeypatch.setattr(main_module, "list_skills", lambda: ["code-review", "code-spec"])
+
+    session = SimpleNamespace(model="llama3.2:3b", session_id="s1")
+
+    run_chat_loop(FakeGraph(), session)
+
+    captured_output = capsys.readouterr().out
+    assert "code-review" in captured_output
+    assert "code-spec" in captured_output

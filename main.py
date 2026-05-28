@@ -1,10 +1,12 @@
 from langchain_core.messages import BaseMessage, HumanMessage
 
+from app.agent.graph import build_graph
 from app.mcp.client import connect_mcp
 from app.agent.nodes import compress_node
 from app.agent.spawn import SessionContext, start_spawn_flow
 from app.agent.state import AgentState
 from app.session.manager import create_session, set_model
+from app.skills.loader import list_skills
 from app.tui.commands import Command, parse_command
 
 DEFAULT_MODEL = "llama3.2:3b"
@@ -50,6 +52,10 @@ def run_chat_loop(graph, session) -> None:
                 ))
             elif parsed_command.command == Command.MCP:
                 connect_mcp(session.session_id, parsed_command.arg)
+            elif parsed_command.command == Command.SKILLS:
+                available_skills = list_skills()
+                print("\n".join(available_skills))
+                print()
             continue
 
         turn_messages = conversation_messages + [HumanMessage(content=user_input)]

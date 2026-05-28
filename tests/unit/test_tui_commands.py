@@ -35,3 +35,9 @@ def test_parse_command_returns_mcp_with_url_for_mcp_command():
     result = parse_command("\\mcp http://localhost:8080")
 
     assert result == ParsedCommand(command=Command.MCP, arg="http://localhost:8080")
+
+
+def test_parse_command_returns_skills_for_skills_command():
+    result = parse_command("\\skills")
+
+    assert result == ParsedCommand(command=Command.SKILLS)
