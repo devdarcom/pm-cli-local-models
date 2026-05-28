@@ -47,3 +47,9 @@ def test_parse_command_returns_stop_for_stop_command():
     result = parse_command("\\stop")
 
     assert result == ParsedCommand(command=Command.STOP)
+
+
+def test_parse_command_returns_help_for_help_command():
+    result = parse_command("\\help")
+
+    assert result == ParsedCommand(command=Command.HELP)
