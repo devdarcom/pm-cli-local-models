@@ -224,3 +224,17 @@ def test_run_chat_loop_stops_session_for_stop_command(monkeypatch, capsys):
 
     assert len(graph.calls) == 0
     assert STOP_SESSION_MESSAGE in capsys.readouterr().out
+
+
+def test_run_chat_loop_prints_available_commands_for_help_command(monkeypatch, capsys):
+    user_inputs = iter(["\\help", "exit"])
+    monkeypatch.setattr("builtins.input", lambda _: next(user_inputs))
+
+    session = SimpleNamespace(model="llama3.2:3b", session_id="s1")
+
+    run_chat_loop(FakeGraph(), session)
+
+    captured_output = capsys.readouterr().out
+    assert "\\new" in captured_output
+    assert "\\spawn" in captured_output
+    assert "\\help" in captured_output

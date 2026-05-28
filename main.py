@@ -8,6 +8,7 @@ from app.agent.state import AgentState
 from app.session.manager import create_session, set_model
 from app.skills.loader import list_skills
 from app.tui.commands import Command, parse_command
+from app.tui.help import format_available_commands
 
 DEFAULT_MODEL = "llama3.2:3b"
 EXIT_COMMAND = "exit"
@@ -60,6 +61,9 @@ def run_chat_loop(graph, session) -> None:
             elif parsed_command.command == Command.STOP:
                 print(STOP_SESSION_MESSAGE)
                 break
+            elif parsed_command.command == Command.HELP:
+                print(format_available_commands())
+                print()
             continue
 
         turn_messages = conversation_messages + [HumanMessage(content=user_input)]
