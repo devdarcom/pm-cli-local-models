@@ -134,7 +134,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | B-04 | UNIT | `parse_command("\model llama3.2:3b")` zwraca `Command.MODEL` z arg `"llama3.2:3b"` | done |
 | B-05 | UNIT | `parse_command("\spawn")` zwraca `Command.SPAWN` | done |
 | B-06 | UNIT | `parse_command("\mcp http://...")` zwraca `Command.MCP` z arg url | done |
-| B-07 | UNIT | `parse_command("\skills")` zwraca `Command.SKILLS` | todo |
+| B-07 | UNIT | `parse_command("\skills")` zwraca `Command.SKILLS` | done |
 | B-08 | UNIT | `parse_command("\stop")` zwraca `Command.STOP` | todo |
 | B-09 | UNIT | `parse_command("\help")` zwraca `Command.HELP` | todo |
 | B-10 | UNIT | `parse_command("zwykły tekst")` zwraca `None` (nie jest komendą) | todo |
@@ -145,7 +145,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | BL-04 | UNIT | Po `parse_command("\model llama3.2:3b")` chat loop aktualizuje model aktywnej sesji | done |
 | BL-05 | UNIT | Po `parse_command("\spawn")` chat loop uruchamia flow tworzenia sub-agenta | done |
 | BL-06 | UNIT | Po `parse_command("\mcp <url>")` chat loop inicjuje podpięcie MCP do aktywnego agenta | done |
-| BL-07 | UNIT | Po `parse_command("\skills")` chat loop zwraca listę dostępnych skillów | todo |
+| BL-07 | UNIT | Po `parse_command("\skills")` chat loop zwraca listę dostępnych skillów | done |
 | BL-08 | UNIT | Po `parse_command("\stop")` chat loop kończy działanie aktywnej sesji | todo |
 | BL-09 | UNIT | Po `parse_command("\help")` chat loop zwraca listę dostępnych komend | todo |
 | BL-10 | UNIT | Dla zwykłego tekstu (`parse_command(...) == None`) chat loop wykonuje standardowe wywołanie modelu | todo |
@@ -279,7 +279,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Kolejka | 3 | 1 | 0 | 4 | 0 | 4 |
 | Obsługa błędów | 3 | 3 | 0 | 6 | 6 | 0 |
 | Kompresja | 3 | 3 | 0 | 6 | 6 | 0 |
-| Backslash Commands | 22 | 0 | 0 | 22 | 12 | 0 |
+| Backslash Commands | 22 | 0 | 0 | 22 | 14 | 0 |
 | Zmiana modelu | 2 | 1 | 0 | 3 | 0 | 0 |
 | Skille | 5 | 1 | 0 | 6 | 0 | 0 |
 | MCP | 2 | 2 | 0 | 4 | 0 | 0 |
@@ -288,4 +288,4 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | At-Mentions | 8 | 2 | 0 | 10 | 0 | 0 |
 | Poprawki (FX) | 10 | 1 | 0 | 11 | 11 | 0 |
 | Scenariusze E2E | 0 | 0 | 7 | 7 | 0 | 0 |
-| **Łącznie** | **100** | **24** | **7** | **131** | **78** | **4** |
+| **Łącznie** | **100** | **24** | **7** | **131** | **80** | **4** |
