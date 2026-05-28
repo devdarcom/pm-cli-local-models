@@ -1,4 +1,12 @@
-from app.tui.commands import Command, ParsedCommand, parse_command
+from app.tui.commands import Command, ParsedCommand, ParseError, parse_command
+
+
+def test_parse_command_returns_missing_argument_error_for_model_without_argument():
+    result = parse_command("\\model")
+
+    assert isinstance(result, ParseError)
+    assert result.command == Command.MODEL
+    assert "brak argumentu" in result.message.lower()
 
 
 def test_parse_command_returns_new_for_new_command():
