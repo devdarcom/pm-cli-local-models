@@ -29,3 +29,9 @@ def test_parse_command_returns_spawn_for_spawn_command():
     result = parse_command("\\spawn")
 
     assert result == ParsedCommand(command=Command.SPAWN)
+
+
+def test_parse_command_returns_mcp_with_url_for_mcp_command():
+    result = parse_command("\\mcp http://localhost:8080")
+
+    assert result == ParsedCommand(command=Command.MCP, arg="http://localhost:8080")

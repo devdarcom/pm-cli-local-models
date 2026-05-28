@@ -1,6 +1,6 @@
 from langchain_core.messages import BaseMessage, HumanMessage
 
-from app.agent.graph import build_graph
+from app.mcp.client import connect_mcp
 from app.agent.nodes import compress_node
 from app.agent.spawn import SessionContext, start_spawn_flow
 from app.agent.state import AgentState
@@ -48,6 +48,8 @@ def run_chat_loop(graph, session) -> None:
                     session_id=session.session_id,
                     model_name=session.model,
                 ))
+            elif parsed_command.command == Command.MCP:
+                connect_mcp(session.session_id, parsed_command.arg)
             continue
 
         turn_messages = conversation_messages + [HumanMessage(content=user_input)]

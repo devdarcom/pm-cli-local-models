@@ -177,3 +177,23 @@ def test_run_chat_loop_starts_spawn_flow_for_spawn_command(monkeypatch):
 
     assert spawn_calls == ["s1"]
     assert len(graph.calls) == 0
+
+
+def test_run_chat_loop_connects_mcp_for_mcp_command(monkeypatch):
+    user_inputs = iter(["\\mcp http://localhost:8080", "exit"])
+    monkeypatch.setattr("builtins.input", lambda _: next(user_inputs))
+
+    mcp_calls: list[tuple[str, str]] = []
+
+    def fake_connect_mcp(agent_id: str, url: str):
+        mcp_calls.append((agent_id, url))
+
+    monkeypatch.setattr(main_module, "connect_mcp", fake_connect_mcp)
+
+    graph = FakeGraph()
+    session = SimpleNamespace(model="llama3.2:3b", session_id="s1")
+
+    run_chat_loop(graph, session)
+
+    assert mcp_calls == [("s1", "http://localhost:8080")]
+    assert len(graph.calls) == 0
