@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
+from typing import Optional, Union
 
 NEW_COMMAND_LITERAL = "\\new"
 RESET_COMMAND_LITERAL = "\\reset"
@@ -10,7 +10,11 @@ SKILLS_COMMAND_LITERAL = "\\skills"
 STOP_COMMAND_LITERAL = "\\stop"
 HELP_COMMAND_LITERAL = "\\help"
 MCP_COMMAND_PREFIX = "\\mcp "
+MODEL_COMMAND_LITERAL = "\\model"
 MODEL_COMMAND_PREFIX = "\\model "
+MISSING_MODEL_ARGUMENT_MESSAGE = (
+    "Błąd: brak argumentu dla \\model. Użyj: \\model <nazwa modelu>"
+)
 
 
 class Command(Enum):
@@ -31,7 +35,16 @@ class ParsedCommand:
     arg: Optional[str] = None
 
 
-def parse_command(text: str) -> Optional[ParsedCommand]:
+@dataclass(frozen=True)
+class ParseError:
+    message: str
+    command: Command
+
+
+ParseResult = Union[ParsedCommand, ParseError, None]
+
+
+def parse_command(text: str) -> ParseResult:
     normalized_text = text.strip()
     if normalized_text == NEW_COMMAND_LITERAL:
         return ParsedCommand(command=Command.NEW)
@@ -51,8 +64,17 @@ def parse_command(text: str) -> Optional[ParsedCommand]:
         server_url = normalized_text[len(MCP_COMMAND_PREFIX) :].strip()
         if server_url:
             return ParsedCommand(command=Command.MCP, arg=server_url)
+    if normalized_text == MODEL_COMMAND_LITERAL:
+        return ParseError(
+            message=MISSING_MODEL_ARGUMENT_MESSAGE,
+            command=Command.MODEL,
+        )
     if normalized_text.startswith(MODEL_COMMAND_PREFIX):
         model_name = normalized_text[len(MODEL_COMMAND_PREFIX) :].strip()
         if model_name:
             return ParsedCommand(command=Command.MODEL, arg=model_name)
+        return ParseError(
+            message=MISSING_MODEL_ARGUMENT_MESSAGE,
+            command=Command.MODEL,
+        )
     return None

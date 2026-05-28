@@ -7,7 +7,7 @@ from app.agent.spawn import SessionContext, start_spawn_flow
 from app.agent.state import AgentState
 from app.session.manager import create_session, set_model
 from app.skills.loader import list_skills
-from app.tui.commands import Command, parse_command
+from app.tui.commands import Command, ParseError, parse_command
 from app.tui.help import format_available_commands
 
 DEFAULT_MODEL = "llama3.2:3b"
@@ -29,8 +29,12 @@ def run_chat_loop(graph, session) -> None:
         if not user_input:
             continue
 
-        parsed_command = parse_command(user_input)
-        if parsed_command is not None:
+        parsed_result = parse_command(user_input)
+        if isinstance(parsed_result, ParseError):
+            print(parsed_result.message)
+            continue
+        if parsed_result is not None:
+            parsed_command = parsed_result
             if parsed_command.command == Command.NEW:
                 session = create_session(model=session.model)
                 conversation_messages = []

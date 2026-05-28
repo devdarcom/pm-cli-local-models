@@ -252,3 +252,42 @@ def test_run_chat_loop_invokes_graph_for_plain_text(monkeypatch):
     assert len(graph.calls) == 1
     assert isinstance(graph.calls[0][0], HumanMessage)
     assert graph.calls[0][0].content == "zwykły tekst"
+
+
+def test_run_chat_loop_prints_error_and_preserves_session_for_model_without_argument(
+    monkeypatch,
+    capsys,
+):
+    user_inputs = iter(["pierwsza", "\\model", "druga", "exit"])
+    monkeypatch.setattr("builtins.input", lambda _: next(user_inputs))
+
+    session_ids: list[str] = []
+    model_names: list[str] = []
+    message_lengths: list[int] = []
+
+    class ModelErrorTrackingGraph:
+        def invoke(self, payload: dict) -> dict:
+            session_ids.append(payload["session_id"])
+            model_names.append(payload["model_name"])
+            message_lengths.append(len(payload["messages"]))
+            return {"messages": payload["messages"] + [AIMessage(content="OK")]}
+
+    monkeypatch.setattr(
+        main_module,
+        "set_model",
+        lambda session, model: (_ for _ in ()).throw(
+            AssertionError("set_model should not be called"),
+        ),
+    )
+
+    session = SimpleNamespace(model="qwen2.5:3b", session_id="s1")
+
+    run_chat_loop(ModelErrorTrackingGraph(), session)
+
+    captured_output = capsys.readouterr().out
+
+    assert session.model == "qwen2.5:3b"
+    assert session_ids == ["s1", "s1"]
+    assert model_names == ["qwen2.5:3b", "qwen2.5:3b"]
+    assert message_lengths == [1, 3]
+    assert "brak argumentu" in captured_output.lower()
