@@ -138,7 +138,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | B-08 | UNIT | `parse_command("\stop")` zwraca `Command.STOP` | done |
 | B-09 | UNIT | `parse_command("\help")` zwraca `Command.HELP` | done |
 | B-10 | UNIT | `parse_command("zwykły tekst")` zwraca `None` (nie jest komendą) | done |
-| B-11 | UNIT | `parse_command("\model")` bez arg zwraca błąd brakującego argumentu | todo |
+| B-11 | UNIT | `parse_command("\model")` bez arg zwraca błąd brakującego argumentu | done |
 | BL-01 | UNIT | Po `parse_command("\new")` chat loop tworzy nową sesję i czyści historię konwersacji | done |
 | BL-02 | UNIT | Po `parse_command("\reset")` chat loop czyści historię obecnej sesji, zachowując model i `session_id` | done |
 | BL-03 | UNIT | Po `parse_command("\compress")` chat loop uruchamia ścieżkę kompresji kontekstu aktywnej sesji | done |
@@ -149,7 +149,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | BL-08 | UNIT | Po `parse_command("\stop")` chat loop kończy działanie aktywnej sesji | done |
 | BL-09 | UNIT | Po `parse_command("\help")` chat loop zwraca listę dostępnych komend | done |
 | BL-10 | UNIT | Dla zwykłego tekstu (`parse_command(...) == None`) chat loop wykonuje standardowe wywołanie modelu | done |
-| BL-11 | UNIT | Po błędzie parsera `\model` bez argumentu chat loop zwraca czytelny komunikat i nie zmienia stanu sesji | todo |
+| BL-11 | UNIT | Po błędzie parsera `\model` bez argumentu chat loop zwraca czytelny komunikat i nie zmienia stanu sesji | done |
 
 ---
 
@@ -279,7 +279,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Kolejka | 3 | 1 | 0 | 4 | 0 | 4 |
 | Obsługa błędów | 3 | 3 | 0 | 6 | 6 | 0 |
 | Kompresja | 3 | 3 | 0 | 6 | 6 | 0 |
-| Backslash Commands | 22 | 0 | 0 | 22 | 19 | 0 |
+| Backslash Commands | 22 | 0 | 0 | 22 | 21 | 0 |
 | Zmiana modelu | 2 | 1 | 0 | 3 | 0 | 0 |
 | Skille | 5 | 1 | 0 | 6 | 0 | 0 |
 | MCP | 2 | 2 | 0 | 4 | 0 | 0 |
@@ -288,4 +288,4 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | At-Mentions | 8 | 2 | 0 | 10 | 0 | 0 |
 | Poprawki (FX) | 10 | 1 | 0 | 11 | 11 | 0 |
 | Scenariusze E2E | 0 | 0 | 7 | 7 | 0 | 0 |
-| **Łącznie** | **100** | **24** | **7** | **131** | **85** | **4** |
+| **Łącznie** | **100** | **24** | **7** | **131** | **87** | **4** |
