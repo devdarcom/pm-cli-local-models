@@ -238,3 +238,17 @@ def test_run_chat_loop_prints_available_commands_for_help_command(monkeypatch, c
     assert "\\new" in captured_output
     assert "\\spawn" in captured_output
     assert "\\help" in captured_output
+
+
+def test_run_chat_loop_invokes_graph_for_plain_text(monkeypatch):
+    user_inputs = iter(["zwykły tekst", "exit"])
+    monkeypatch.setattr("builtins.input", lambda _: next(user_inputs))
+
+    graph = FakeGraph()
+    session = SimpleNamespace(model="llama3.2:3b", session_id="s1")
+
+    run_chat_loop(graph, session)
+
+    assert len(graph.calls) == 1
+    assert isinstance(graph.calls[0][0], HumanMessage)
+    assert graph.calls[0][0].content == "zwykły tekst"

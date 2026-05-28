@@ -53,3 +53,9 @@ def test_parse_command_returns_help_for_help_command():
     result = parse_command("\\help")
 
     assert result == ParsedCommand(command=Command.HELP)
+
+
+def test_parse_command_returns_none_for_plain_text():
+    result = parse_command("zwykły tekst")
+
+    assert result is None
