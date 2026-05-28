@@ -3,7 +3,7 @@ from types import SimpleNamespace
 from langchain_core.messages import AIMessage, HumanMessage
 
 import main as main_module
-from main import run_chat_loop
+from main import STOP_SESSION_MESSAGE, run_chat_loop
 
 
 class FakeGraph:
@@ -211,3 +211,16 @@ def test_run_chat_loop_prints_available_skills_for_skills_command(monkeypatch, c
     captured_output = capsys.readouterr().out
     assert "code-review" in captured_output
     assert "code-spec" in captured_output
+
+
+def test_run_chat_loop_stops_session_for_stop_command(monkeypatch, capsys):
+    user_inputs = iter(["\\stop"])
+    monkeypatch.setattr("builtins.input", lambda _: next(user_inputs))
+
+    graph = FakeGraph()
+    session = SimpleNamespace(model="llama3.2:3b", session_id="s1")
+
+    run_chat_loop(graph, session)
+
+    assert len(graph.calls) == 0
+    assert STOP_SESSION_MESSAGE in capsys.readouterr().out

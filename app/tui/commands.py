@@ -7,6 +7,7 @@ RESET_COMMAND_LITERAL = "\\reset"
 COMPRESS_COMMAND_LITERAL = "\\compress"
 SPAWN_COMMAND_LITERAL = "\\spawn"
 SKILLS_COMMAND_LITERAL = "\\skills"
+STOP_COMMAND_LITERAL = "\\stop"
 MCP_COMMAND_PREFIX = "\\mcp "
 MODEL_COMMAND_PREFIX = "\\model "
 
@@ -19,6 +20,7 @@ class Command(Enum):
     SPAWN = "spawn"
     MCP = "mcp"
     SKILLS = "skills"
+    STOP = "stop"
 
 
 @dataclass(frozen=True)
@@ -39,6 +41,8 @@ def parse_command(text: str) -> Optional[ParsedCommand]:
         return ParsedCommand(command=Command.SPAWN)
     if normalized_text == SKILLS_COMMAND_LITERAL:
         return ParsedCommand(command=Command.SKILLS)
+    if normalized_text == STOP_COMMAND_LITERAL:
+        return ParsedCommand(command=Command.STOP)
     if normalized_text.startswith(MCP_COMMAND_PREFIX):
         server_url = normalized_text[len(MCP_COMMAND_PREFIX) :].strip()
         if server_url:
