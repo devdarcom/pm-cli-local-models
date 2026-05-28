@@ -94,3 +94,41 @@ def test_run_chat_loop_resets_history_without_changing_session_for_reset_command
     assert session_ids == ["s1", "s1"]
     assert model_names == ["llama3.2:3b", "llama3.2:3b"]
     assert message_lengths == [1, 1]
+
+
+def test_run_chat_loop_runs_compression_for_compress_command(monkeypatch):
+    user_inputs = iter(["pierwsza", "druga", "\\compress", "trzecia", "exit"])
+    monkeypatch.setattr("builtins.input", lambda _: next(user_inputs))
+
+    graph_invoke_count = 0
+    compress_call_count = 0
+    session_ids_in_compress: list[str] = []
+    model_names_in_compress: list[str] = []
+
+    class CompressionTrackingGraph:
+        def invoke(self, payload: dict) -> dict:
+            nonlocal graph_invoke_count
+            graph_invoke_count += 1
+            return {"messages": payload["messages"] + [AIMessage(content="OK")]}
+
+    def fake_compress_node(state):
+        nonlocal compress_call_count
+        compress_call_count += 1
+        session_ids_in_compress.append(state.session_id)
+        model_names_in_compress.append(state.model_name)
+        compressed_messages = [
+            state.messages[0],
+            AIMessage(content="[Skompresowany kontekst] podsumowanie"),
+        ]
+        return {"messages": compressed_messages, "summary": "podsumowanie"}
+
+    monkeypatch.setattr(main_module, "compress_node", fake_compress_node)
+
+    session = SimpleNamespace(model="llama3.2:3b", session_id="s1")
+
+    run_chat_loop(CompressionTrackingGraph(), session)
+
+    assert compress_call_count == 1
+    assert session_ids_in_compress == ["s1"]
+    assert model_names_in_compress == ["llama3.2:3b"]
+    assert graph_invoke_count == 3

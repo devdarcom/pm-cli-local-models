@@ -1,6 +1,8 @@
 from langchain_core.messages import BaseMessage, HumanMessage
 
 from app.agent.graph import build_graph
+from app.agent.nodes import compress_node
+from app.agent.state import AgentState
 from app.session.manager import create_session
 from app.tui.commands import Command, parse_command
 
@@ -29,6 +31,16 @@ def run_chat_loop(graph, session) -> None:
             continue
         if parsed_command == Command.RESET:
             conversation_messages = []
+            continue
+        if parsed_command == Command.COMPRESS:
+            if conversation_messages:
+                compression_state = AgentState(
+                    session_id=session.session_id,
+                    model_name=session.model,
+                    messages=conversation_messages,
+                )
+                compression_result = compress_node(compression_state)
+                conversation_messages = list(compression_result["messages"])
             continue
 
         turn_messages = conversation_messages + [HumanMessage(content=user_input)]
