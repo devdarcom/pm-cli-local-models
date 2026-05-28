@@ -5,6 +5,7 @@ from typing import Optional
 NEW_COMMAND_LITERAL = "\\new"
 RESET_COMMAND_LITERAL = "\\reset"
 COMPRESS_COMMAND_LITERAL = "\\compress"
+SPAWN_COMMAND_LITERAL = "\\spawn"
 MODEL_COMMAND_PREFIX = "\\model "
 
 
@@ -13,6 +14,7 @@ class Command(Enum):
     RESET = "reset"
     COMPRESS = "compress"
     MODEL = "model"
+    SPAWN = "spawn"
 
 
 @dataclass(frozen=True)
@@ -29,6 +31,8 @@ def parse_command(text: str) -> Optional[ParsedCommand]:
         return ParsedCommand(command=Command.RESET)
     if normalized_text == COMPRESS_COMMAND_LITERAL:
         return ParsedCommand(command=Command.COMPRESS)
+    if normalized_text == SPAWN_COMMAND_LITERAL:
+        return ParsedCommand(command=Command.SPAWN)
     if normalized_text.startswith(MODEL_COMMAND_PREFIX):
         model_name = normalized_text[len(MODEL_COMMAND_PREFIX) :].strip()
         if model_name:

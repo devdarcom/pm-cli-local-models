@@ -2,6 +2,7 @@ from langchain_core.messages import BaseMessage, HumanMessage
 
 from app.agent.graph import build_graph
 from app.agent.nodes import compress_node
+from app.agent.spawn import SessionContext, start_spawn_flow
 from app.agent.state import AgentState
 from app.session.manager import create_session, set_model
 from app.tui.commands import Command, parse_command
@@ -42,6 +43,11 @@ def run_chat_loop(graph, session) -> None:
                     conversation_messages = list(compression_result["messages"])
             elif parsed_command.command == Command.MODEL:
                 set_model(session, parsed_command.arg)
+            elif parsed_command.command == Command.SPAWN:
+                start_spawn_flow(SessionContext(
+                    session_id=session.session_id,
+                    model_name=session.model,
+                ))
             continue
 
         turn_messages = conversation_messages + [HumanMessage(content=user_input)]
