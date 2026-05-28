@@ -1,5 +1,6 @@
 from app.tui.commands import (
     COMPRESS_COMMAND_LITERAL,
+    HELP_COMMAND_LITERAL,
     MCP_COMMAND_PREFIX,
     MODEL_COMMAND_PREFIX,
     NEW_COMMAND_LITERAL,
@@ -8,8 +9,6 @@ from app.tui.commands import (
     SPAWN_COMMAND_LITERAL,
     STOP_COMMAND_LITERAL,
 )
-
-HELP_COMMAND_LITERAL = "\\help"
 
 AVAILABLE_COMMANDS = [
     NEW_COMMAND_LITERAL,
