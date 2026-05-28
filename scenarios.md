@@ -131,7 +131,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | B-01 | UNIT | `parse_command("\new")` zwraca `Command.NEW` | done |
 | B-02 | UNIT | `parse_command("\reset")` zwraca `Command.RESET` | done |
 | B-03 | UNIT | `parse_command("\compress")` zwraca `Command.COMPRESS` | done |
-| B-04 | UNIT | `parse_command("\model llama3.2:3b")` zwraca `Command.MODEL` z arg `"llama3.2:3b"` | todo |
+| B-04 | UNIT | `parse_command("\model llama3.2:3b")` zwraca `Command.MODEL` z arg `"llama3.2:3b"` | done |
 | B-05 | UNIT | `parse_command("\spawn")` zwraca `Command.SPAWN` | todo |
 | B-06 | UNIT | `parse_command("\mcp http://...")` zwraca `Command.MCP` z arg url | todo |
 | B-07 | UNIT | `parse_command("\skills")` zwraca `Command.SKILLS` | todo |
@@ -142,7 +142,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | BL-01 | UNIT | Po `parse_command("\new")` chat loop tworzy nową sesję i czyści historię konwersacji | done |
 | BL-02 | UNIT | Po `parse_command("\reset")` chat loop czyści historię obecnej sesji, zachowując model i `session_id` | done |
 | BL-03 | UNIT | Po `parse_command("\compress")` chat loop uruchamia ścieżkę kompresji kontekstu aktywnej sesji | done |
-| BL-04 | UNIT | Po `parse_command("\model llama3.2:3b")` chat loop aktualizuje model aktywnej sesji | todo |
+| BL-04 | UNIT | Po `parse_command("\model llama3.2:3b")` chat loop aktualizuje model aktywnej sesji | done |
 | BL-05 | UNIT | Po `parse_command("\spawn")` chat loop uruchamia flow tworzenia sub-agenta | todo |
 | BL-06 | UNIT | Po `parse_command("\mcp <url>")` chat loop inicjuje podpięcie MCP do aktywnego agenta | todo |
 | BL-07 | UNIT | Po `parse_command("\skills")` chat loop zwraca listę dostępnych skillów | todo |
@@ -279,7 +279,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Kolejka | 3 | 1 | 0 | 4 | 0 | 4 |
 | Obsługa błędów | 3 | 3 | 0 | 6 | 6 | 0 |
 | Kompresja | 3 | 3 | 0 | 6 | 6 | 0 |
-| Backslash Commands | 22 | 0 | 0 | 22 | 6 | 0 |
+| Backslash Commands | 22 | 0 | 0 | 22 | 8 | 0 |
 | Zmiana modelu | 2 | 1 | 0 | 3 | 0 | 0 |
 | Skille | 5 | 1 | 0 | 6 | 0 | 0 |
 | MCP | 2 | 2 | 0 | 4 | 0 | 0 |
@@ -288,4 +288,4 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | At-Mentions | 8 | 2 | 0 | 10 | 0 | 0 |
 | Poprawki (FX) | 10 | 1 | 0 | 11 | 11 | 0 |
 | Scenariusze E2E | 0 | 0 | 7 | 7 | 0 | 0 |
-| **Łącznie** | **100** | **24** | **7** | **131** | **72** | **4** |
+| **Łącznie** | **100** | **24** | **7** | **131** | **74** | **4** |
