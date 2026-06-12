@@ -36,3 +36,10 @@ def test_set_model_updates_model_when_model_is_available():
     set_model(session, "qwen2.5:3b")
 
     assert session.model == "qwen2.5:3b"
+
+
+def test_set_model_raises_value_error_for_unavailable_model():
+    session = create_session(model="llama3.2:3b")
+
+    with pytest.raises(ValueError, match="nieznany model"):
+        set_model(session, "nieznany-model-xyz")
