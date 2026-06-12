@@ -29,7 +29,7 @@ def set_model(session: Session, model: str) -> None:
 
 def available_models() -> list[str]:
     response = ollama.list()
-    return [m.model for m in response.models if m.model is not None]
+    return [model_info.model for model_info in response.models if model_info.model is not None]
 
 
 def reset_session(session: Session) -> None:
