@@ -159,7 +159,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 |---|---|---|---|
 | M-01 | UNIT | `set_model()` aktualizuje model w sesji gdy model jest na liście dostępnych | done |
 | M-02 | UNIT | `set_model()` zwraca błąd gdy model nie jest dostępny | done |
-| M-03 | INT | `available_models()` zwraca listę z Ollamy (mock: `["llama3.2:3b", "qwen2.5:3b"]`) | todo |
+| M-03 | INT | `available_models()` zwraca listę z Ollamy (mock: `["llama3.2:3b", "qwen2.5:3b"]`) | done |
 
 ---
 
@@ -280,7 +280,7 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | Obsługa błędów | 3 | 3 | 0 | 6 | 6 | 0 |
 | Kompresja | 3 | 3 | 0 | 6 | 6 | 0 |
 | Backslash Commands | 22 | 0 | 0 | 22 | 21 | 0 |
-| Zmiana modelu | 2 | 1 | 0 | 3 | 2 | 0 |
+| Zmiana modelu | 2 | 1 | 0 | 3 | 3 | 0 |
 | Skille | 5 | 1 | 0 | 6 | 0 | 0 |
 | MCP | 2 | 2 | 0 | 4 | 0 | 0 |
 | Wieloagentowość | 3 | 1 | 0 | 4 | 0 | 0 |
@@ -288,4 +288,4 @@ Legenda statusów: `todo` = do zrobienia, `done` = PR przeszło, `cancelled` = w
 | At-Mentions | 8 | 2 | 0 | 10 | 0 | 0 |
 | Poprawki (FX) | 10 | 1 | 0 | 11 | 11 | 0 |
 | Scenariusze E2E | 0 | 0 | 7 | 7 | 0 | 0 |
-| **Łącznie** | **100** | **24** | **7** | **131** | **89** | **4** |
+| **Łącznie** | **100** | **24** | **7** | **131** | **90** | **4** |
