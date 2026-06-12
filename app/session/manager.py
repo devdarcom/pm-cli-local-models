@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 import uuid
 
+import ollama
+
 AVAILABLE_MODELS = {"llama3.2:3b", "qwen2.5:3b"}
 
 
@@ -23,6 +25,11 @@ def create_session(model: str) -> Session:
 def set_model(session: Session, model: str) -> None:
     _validate_model(model)
     session.model = model
+
+
+def available_models() -> list[str]:
+    response = ollama.list()
+    return [model_info.model for model_info in response.models if model_info.model is not None]
 
 
 def reset_session(session: Session) -> None:
